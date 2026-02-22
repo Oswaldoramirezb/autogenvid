@@ -1,0 +1,32 @@
+# Dependencias de Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log
+
+# Variables de entorno (NUNCA commitear)
+.env
+.env.local
+.env.production
+
+# Builds y artefactos de deploy
+dist/
+*.zip
+/lambda-guion.zip
+/lambda-preview.zip
+/lambda-video.zip
+/lambda-batch.zip
+
+# Cobertura de tests
+coverage/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs de AWS
+*.log
