@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Variables globales ──────────────────────────────────────────────────── */
+:root {
+  --color-bg:        #0f172a;
+  --color-bg-card:   #1e293b;
+  --color-border:    #334155;
+  --color-neon-blue: #3b82f6;
+  --color-text:      #e2e8f0;
+  --color-muted:     #94a3b8;
+  --scrollbar-width: 6px;
+}
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* ── Scrollbar personalizado ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: var(--scrollbar-width); height: var(--scrollbar-width); }
+::-webkit-scrollbar-track { background: #1e293b; }
+::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+
+/* ── Utilidades de componentes ───────────────────────────────────────────── */
+@layer components {
+  /* Botón primario */
+  .btn-primary {
+    @apply bg-neon-blue hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg
+           transition-all duration-200 hover:scale-105 active:scale-95
+           shadow-neon-blue hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50;
+  }
+
+  /* Botón secundario */
+  .btn-secondary {
+    @apply bg-dark-700 hover:bg-dark-600 text-slate-200 font-medium px-4 py-2 rounded-lg
+           border border-dark-600 hover:border-neon-blue/50 transition-all duration-200
+           hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-slate-500/50;
+  }
+
+  /* Botón éxito */
+  .btn-success {
+    @apply bg-neon-green hover:bg-emerald-600 text-white font-semibold px-4 py-2 rounded-lg
+           transition-all duration-200 hover:scale-105 active:scale-95 focus:outline-none;
+  }
+
+  /* Botón peligro */
+  .btn-danger {
+    @apply bg-neon-red hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg
+           transition-all duration-200 hover:animate-shake focus:outline-none;
+  }
+
+  /* Card base */
+  .card {
+    @apply bg-dark-800 border border-dark-700 rounded-2xl shadow-2xl
+           hover:shadow-3xl hover:border-neon-blue/30 transition-all duration-300;
+  }
+
+  /* Card con borde lateral azul */
+  .card-accent {
+    @apply card border-l-4 border-l-neon-blue;
+  }
+
+  /* Input dark */
+  .input-dark {
+    @apply bg-dark-900 border border-dark-700 text-slate-100 rounded-lg px-4 py-2
+           placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-neon-blue/50
+           focus:border-neon-blue transition-all duration-200 w-full;
+  }
+
+  /* Badge de estado */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    @apply animate-pulse bg-gradient-to-r from-dark-800 via-dark-700 to-dark-800
+           rounded-lg bg-[length:200%_100%];
+  }
+
+  /* Gradiente de fondo hero */
+  .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59,130,246,0.2), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(139,92,246,0.1), transparent),
+                linear-gradient(135deg, #030712 0%, #0f172a 50%, #0c0a1e 100%);
+  }
+}
+
+/* ── Animaciones globales ────────────────────────────────────────────────── */
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+  }
+}
