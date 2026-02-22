@@ -1,0 +1,20 @@
+# Archivos locales de Terraform
+.terraform/
+.terraform.lock.hcl
+
+# Estado de Terraform
+*.tfstate
+*.tfstate.*
+
+# Variables de entorno y secretos
+*.tfvars
+*.tfvars.json
+
+# Archivos de log
+*.log
+
+# Planes de ejecución (pueden contener secretos)
+*.tfplan
+
+# Archivos temporales
+.terraform.tfstate.lock.info
