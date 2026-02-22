@@ -1,0 +1,22 @@
+{
+    "name": "lambda-preview",
+    "version": "1.0.0",
+    "description": "Lambda VideoBot AI — Preview de audio ElevenLabs y fondos Pexels/Unsplash (mock)",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest --coverage",
+        "lint": "eslint ."
+    },
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.540.0",
+        "@aws-sdk/lib-dynamodb": "^3.540.0",
+        "@aws-sdk/client-s3": "^3.540.0",
+        "@aws-sdk/s3-request-presigner": "^3.540.0"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0"
+    },
+    "engines": {
+        "node": ">=20.x"
+    }
+}
