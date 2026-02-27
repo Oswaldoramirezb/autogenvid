@@ -51,7 +51,6 @@ resource "aws_iam_role_policy" "lambda_policy" {
 
 locals {
   lambda_env = {
-    AWS_REGION              = data.aws_region.current.name
     DYNAMODB_TABLE_NAME     = var.dynamodb_table_name
     S3_VIDEOS_BUCKET        = var.s3_videos_bucket
     USE_MOCK                = tostring(var.use_mock)

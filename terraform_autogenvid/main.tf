@@ -49,7 +49,7 @@ module "s3" {
 module "cognito" {
   source          = "./modules/cognito"
   name_prefix     = local.name_prefix
-  cloudfront_url  = module.cloudfront.cloudfront_url
+  cloudfront_url  = "https://${module.cloudfront.cloudfront_url}"
   environment     = var.environment
 }
 

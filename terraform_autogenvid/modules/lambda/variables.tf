@@ -4,11 +4,26 @@ variable "dynamodb_table_name"     { type = string }
 variable "dynamodb_table_arn"      { type = string }
 variable "s3_videos_bucket"        { type = string }
 variable "s3_videos_bucket_arn"    { type = string }
-variable "use_mock"                { type = bool    default = true }
-variable "elevenlabs_api_key"      { type = string  sensitive = true }
-variable "gemini_api_key"          { type = string  sensitive = true }
-variable "pexels_api_key"          { type = string  sensitive = true }
-variable "unsplash_access_key"     { type = string  sensitive = true }
+variable "use_mock" {
+  type    = bool
+  default = true
+}
+variable "elevenlabs_api_key" {
+  type      = string
+  sensitive = true
+}
+variable "gemini_api_key" {
+  type      = string
+  sensitive = true
+}
+variable "pexels_api_key" {
+  type      = string
+  sensitive = true
+}
+variable "unsplash_access_key" {
+  type      = string
+  sensitive = true
+}
 
 output "lambda_guion_arn"              { value = aws_lambda_function.guion.arn }
 output "lambda_guion_invoke_arn"       { value = aws_lambda_function.guion.invoke_arn }
