@@ -1,8 +1,8 @@
 'use strict';
 
 const { v4: uuidv4 } = require('uuid');
-const { docClient } = require('../shared/dynamoClient');
-const { PutCommand } = require('@aws-sdk/lib-dynamodb');
+const { docClient } = require('./shared/dynamoClient');
+const { PutCommand, ScanCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb');
 
 const USE_MOCK = process.env.USE_MOCK === 'true' || true;
 const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'videos';
@@ -43,14 +43,14 @@ Síguenos para aprender a surfear esta ola tecnológica antes de que te arrastre
     },
 };
 
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
 /**
- * Genera un guion usando Gemini AI (o mock).
- * @param {string} tema
- * @param {string} [customPrompt]
+ * Genera un guion usando Gemini AI.
  */
 async function generarGuion(tema, customPrompt) {
-    if (USE_MOCK) {
-        // Simular latencia de API real
+    if (USE_MOCK && !process.env.GEMINI_API_KEY) {
+        console.log('[MOCK] Generando guion de prueba');
         await new Promise(r => setTimeout(r, 800));
         return {
             ...MOCK_GUION,
@@ -58,15 +58,51 @@ async function generarGuion(tema, customPrompt) {
         };
     }
 
-    // ── Integración real con Gemini (activar cuando USE_MOCK=false) ──
-    // const { GoogleGenerativeAI } = require('@google/generative-ai');
-    // const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    // const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-    // const prompt = customPrompt || `Genera un guion viral de 60 segundos sobre: ${tema}...`;
-    // const result = await model.generateContent(prompt);
-    // return JSON.parse(result.response.text());
+    console.log(`[lambda-guion] Usando API Key: ${process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.substring(0, 4) + '...' : 'VACÍA'}`);
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-    throw new Error('USE_MOCK debe ser true mientras no se configure GEMINI_API_KEY');
+    const systemInstruction = `Eres un experto documentalista y creador de contenido de ALTO NIVEL para YouTube y TikTok, especializado en CULTURA GENERAL, HISTORIA y CIENCIA. 
+Tus guiones deben ser profundos, con datos poco conocidos y una narrativa apasionante.
+
+DURACIÓN: El guion debe durar exactamente 90 SEGUNDOS (aproximadamente 300 a 350 palabras). No seas breve, profundiza en los detalles.
+FUENTES PROHIBIDAS: Queda estrictamente PROHIBIDO usar Wikipedia.
+FUENTES PERMITIDAS: Utiliza únicamente fuentes de prestigio como National Geographic, History Channel, Britannica, Nature, revistas científicas o archivos históricos oficiales. Debes incluir al menos 5 enlaces directos.
+
+ESTRUCTURA DE RESPUESTA: Responde ÚNICAMENTE con un JSON puro (sin bloques de código markdown):
+{
+  "guion": "Texto detallado de 90 segundos con emojis y pausas narrativas...",
+  "fuentes": ["url_prestigio1", "url_prestigio2", "url_prestigio3", "url_prestigio4", "url_prestigio5"],
+  "postRedes": {
+    "twitter": "Post viral",
+    "instagram": "Caption educativa",
+    "tiktok": "Script de enganche",
+    "linkedin": "Análisis profesional"
+  }
+}`;
+
+    const model = genAI.getGenerativeModel({
+        model: 'gemini-2.5-flash',
+        systemInstruction: systemInstruction
+    });
+
+    const userPrompt = customPrompt || `Genera un documental detallado de 90 segundos sobre: ${tema}. Recuerda: Datos profundos, nada de Wikipedia y fuentes de prestigio.`;
+
+    try {
+        const result = await model.generateContent(userPrompt);
+        const text = result.response.text();
+        const cleanContent = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        return JSON.parse(cleanContent);
+    } catch (e) {
+        console.error('[lambda-guion] Error con Gemini:', e);
+
+        const isQuotaError = e.status === 429 || (e.message && e.message.includes('429')) || (e.errorDetails && JSON.stringify(e.errorDetails).includes('429'));
+
+        if (isQuotaError) {
+            throw new Error('Lo sentimos, pero se ha alcanzado el límite de peticiones gratuitas de Google por este minuto. Por favor, espera 30-60 segundos y vuelve a intentarlo. Tu guion profesional estará listo pronto.');
+        }
+
+        throw new Error('No pudimos conectar con el experto en guiones en este momento. Reintenta en unos segundos.');
+    }
 }
 
 /**
@@ -92,4 +128,26 @@ async function crearVideoEnDB(tema, guionData) {
     return item;
 }
 
-module.exports = { generarGuion, crearVideoEnDB };
+/**
+ * Lista todos los videos de la base de datos.
+ */
+async function listarVideos() {
+    const result = await docClient.send(new ScanCommand({
+        TableName: TABLE_NAME
+    }));
+    // Devolvemos los items ordenados por fecha de creación (más recientes primero)
+    return (result.Items || []).sort((a, b) => b.createdAt - a.createdAt);
+}
+
+/**
+ * Elimina un video de la base de datos por su ID.
+ */
+async function eliminarVideo(id) {
+    await docClient.send(new DeleteCommand({
+        TableName: TABLE_NAME,
+        Key: { id }
+    }));
+    return { id, eliminado: true };
+}
+
+module.exports = { generarGuion, crearVideoEnDB, listarVideos, eliminarVideo };

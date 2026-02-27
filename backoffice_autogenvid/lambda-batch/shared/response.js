@@ -33,11 +33,10 @@ function clientError(message, statusCode = 400) {
  */
 function serverError(err) {
     console.error('[Lambda Error]', err);
-    const message = (err instanceof Error) ? err.message : (typeof err === 'string' ? err : 'Error interno del servidor');
     return {
         statusCode: 500,
         headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
-        body: JSON.stringify({ success: false, error: message }),
+        body: JSON.stringify({ success: false, error: 'Error interno del servidor' }),
     };
 }
 
