@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import VoiceSliders from '../voice/VoiceSliders'
 import FondoPicker from '../media/FondoPicker'
 import VideoPlayer from '../media/VideoPlayer'
-import { generarPreview, actualizarVideo, generarVideo, eliminarVideo } from '../../services/api'
+import { generarPreview, actualizarVideo, generarVideo, regenerarGuion, guardarGuion } from '../../services/api'
 
 const TABS = [
     { id: 'guion', label: '📝 Guion' },
@@ -21,6 +21,14 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
     const [isPlaying, setIsPlaying] = useState(false)
     const [loadingVideo, setLoadingVideo] = useState(false)
     const [videoGenerado, setVideoGen] = useState(video.videoUrl || null)
+    // Guion editable localmente (no se guarda hasta Aprobar)
+    const [editedGuion, setEditedGuion] = useState(video.guion || '')
+    const [refinePrompt, setRefinePrompt] = useState('')
+    const [loadingRefine, setLoadingRefine] = useState(false)
+    const [refineError, setRefineError] = useState(null)
+    const [savedGuion, setSavedGuion] = useState(video.guion || '')
+    const [savingGuion, setSavingGuion] = useState(false)
+    const [saveSuccess, setSaveSuccess] = useState(false)
     const audioRef = useRef(null)
 
     // si ya tiene audio guardado
@@ -31,12 +39,44 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
     async function handleProbarVoz() {
         setLoading(true)
         try {
-            const data = await generarPreview(video.id, modo, vozSettings.stability, vozSettings.similarity)
+            // Pasa el guion editado localmente para que la voz use ESE texto
+            const data = await generarPreview(video.id, modo, vozSettings.stability, vozSettings.similarity, editedGuion)
             setPreviewData(data)
             onVideoUpdate && onVideoUpdate()
             playAudio(data.sampleAudioUrl)
         } finally {
             setLoading(false)
+        }
+    }
+
+    async function handleGuardarGuion() {
+        setSavingGuion(true)
+        setSaveSuccess(false)
+        try {
+            await guardarGuion(video.id, editedGuion)
+            setSavedGuion(editedGuion)
+            setSaveSuccess(true)
+            onVideoUpdate && onVideoUpdate()
+            setTimeout(() => setSaveSuccess(false), 3000)
+        } finally {
+            setSavingGuion(false)
+        }
+    }
+
+    async function handleRefinar() {
+        if (!refinePrompt.trim()) return
+        setLoadingRefine(true)
+        setRefineError(null)
+        try {
+            const customPrompt = `El guion actual es:\n"${editedGuion}"\n\nEl usuario quiere que lo modifiques así:\n"${refinePrompt}"\n\nReescribe el guion completo aplicando esas instrucciones. Mantén el mismo tono directo, sin introducción, arrancando con dato impactante. Devuelve el JSON completo con guion, fuentes y postRedes.`
+            const result = await regenerarGuion(video.id, video.tema, customPrompt)
+            setEditedGuion(result.guion || editedGuion)
+            setRefinePrompt('')
+            onVideoUpdate && onVideoUpdate()
+        } catch (e) {
+            setRefineError(e.message)
+        } finally {
+            setLoadingRefine(false)
         }
     }
 
@@ -112,10 +152,69 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
                     {/* Pestaña Guion */}
                     {tab === 'guion' && (
                         <div className="space-y-4 animate-fade-in">
-                            <h3 className="text-sm font-semibold text-slate-300">📝 Guion Generado</h3>
-                            <div className="bg-dark-900/50 border border-dark-700 rounded-xl p-4 text-sm text-slate-300 leading-relaxed whitespace-pre-line max-h-48 overflow-y-auto">
-                                {video.guion || 'Guion pendiente...'}
+                            {/* Guion editable */}
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-sm font-semibold text-slate-300">📝 Guion</h3>
+                                <div className="flex items-center gap-2">
+                                    {editedGuion !== savedGuion && (
+                                        <span className="text-[10px] text-amber-400">● Sin guardar</span>
+                                    )}
+                                    {saveSuccess && (
+                                        <span className="text-[10px] text-neon-green">✓ Guardado</span>
+                                    )}
+                                    <span className="text-[10px] text-slate-500 italic">Editable — los cambios se usan al probar voz</span>
+                                </div>
                             </div>
+                            <textarea
+                                value={editedGuion}
+                                onChange={e => { setEditedGuion(e.target.value); setSaveSuccess(false) }}
+                                rows={8}
+                                className="w-full bg-dark-900/50 border border-dark-700 rounded-xl p-4 text-sm text-slate-300 leading-relaxed resize-y focus:outline-none focus:border-neon-blue/50 transition-colors"
+                                placeholder="Guion pendiente..."
+                            />
+
+                            {/* Botón guardar guion */}
+                            <button
+                                onClick={handleGuardarGuion}
+                                disabled={savingGuion || editedGuion === savedGuion}
+                                className="w-full py-2 rounded-lg text-xs flex items-center justify-center gap-2 border border-neon-blue/30 text-neon-blue hover:bg-neon-blue/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                                {savingGuion ? (
+                                    <><div className="w-3 h-3 border-2 border-neon-blue/30 border-t-neon-blue rounded-full animate-spin" />Guardando...</>
+                                ) : saveSuccess ? '✓ Guion guardado en DynamoDB' : '💾 Guardar guion'}
+                            </button>
+
+                            {/* Sección refinar con IA */}
+                            <div className="border border-dark-700 rounded-xl p-4 space-y-3 bg-dark-900/30">
+                                <h4 className="text-xs font-semibold text-slate-400 flex items-center gap-2">
+                                    ✨ Pedir corrección a la IA
+                                    <span className="text-slate-600 font-normal">— dile qué cambiar y regenerará el guion</span>
+                                </h4>
+                                <textarea
+                                    value={refinePrompt}
+                                    onChange={e => setRefinePrompt(e.target.value)}
+                                    rows={3}
+                                    placeholder='Ej: "Enfócate más en los animales del amazonas", "Añade datos sobre la tribu Yanomami", "Hazlo más dramático y con más cifras"...'
+                                    className="w-full bg-dark-950 border border-dark-600 rounded-lg p-3 text-xs text-slate-300 resize-none focus:outline-none focus:border-neon-purple/50 transition-colors placeholder:text-slate-600"
+                                />
+                                {refineError && (
+                                    <p className="text-xs text-red-400">⚠️ {refineError}</p>
+                                )}
+                                <button
+                                    onClick={handleRefinar}
+                                    disabled={loadingRefine || !refinePrompt.trim()}
+                                    className="btn-secondary w-full py-2 rounded-lg text-xs flex items-center justify-center gap-2 border-neon-purple/30 disabled:opacity-40 disabled:cursor-not-allowed"
+                                >
+                                    {loadingRefine ? (
+                                        <>
+                                            <div className="w-3 h-3 border-2 border-neon-purple/30 border-t-neon-purple rounded-full animate-spin" />
+                                            Regenerando guion...
+                                        </>
+                                    ) : '✨ Aplicar instrucción y regenerar'}
+                                </button>
+                            </div>
+
+                            {/* Posts redes */}
                             {video.postRedes && (
                                 <div className="space-y-2">
                                     <h4 className="text-xs font-semibold text-slate-400">📢 Posts para Redes Sociales</h4>

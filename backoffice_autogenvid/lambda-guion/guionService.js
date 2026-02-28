@@ -2,7 +2,7 @@
 
 const { v4: uuidv4 } = require('uuid');
 const { docClient } = require('./shared/dynamoClient');
-const { PutCommand, ScanCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb');
+const { PutCommand, ScanCommand, DeleteCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
 
 const USE_MOCK = process.env.USE_MOCK === 'true' || true;
 const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'videos';
@@ -136,6 +136,22 @@ async function crearVideoEnDB(tema, guionData) {
 }
 
 /**
+ * Actualiza el guion de un video existente en DynamoDB.
+ */
+async function actualizarGuion(id, guion) {
+    await docClient.send(new UpdateCommand({
+        TableName: TABLE_NAME,
+        Key: { id },
+        UpdateExpression: 'SET guion = :g, updatedAt = :u',
+        ExpressionAttributeValues: {
+            ':g': guion,
+            ':u': Math.floor(Date.now() / 1000),
+        },
+    }));
+    return { id, guion, updated: true };
+}
+
+/**
  * Lista todos los videos de la base de datos.
  */
 async function listarVideos() {
@@ -157,4 +173,4 @@ async function eliminarVideo(id) {
     return { id, eliminado: true };
 }
 
-module.exports = { generarGuion, crearVideoEnDB, listarVideos, eliminarVideo };
+module.exports = { generarGuion, crearVideoEnDB, listarVideos, eliminarVideo, actualizarGuion };

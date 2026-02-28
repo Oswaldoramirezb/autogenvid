@@ -102,6 +102,25 @@ export async function generarVideo(videoId, fondos, stability) {
     return apiFetch('/video', { method: 'POST', body: JSON.stringify({ videoId, fondos, stability }) })
 }
 
+/** PATCH /guion — Guarda el guion editado en DynamoDB */
+export async function guardarGuion(videoId, guion) {
+    if (USE_MOCK) {
+        await delay(300)
+        _videosStore = _videosStore.map(v => v.id === videoId ? { ...v, guion } : v)
+        return { id: videoId, guion, updated: true }
+    }
+    return apiFetch(`/guion/${videoId}`, { method: 'PATCH', body: JSON.stringify({ guion }) })
+}
+
+/** POST /guion — Regenera guion con customPrompt para un video existente */
+export async function regenerarGuion(videoId, tema, customPrompt) {
+    if (USE_MOCK) {
+        await delay(1200)
+        return { guion: `[Mock regenerado] ${customPrompt.substring(0, 80)}...` }
+    }
+    return apiFetch('/guion', { method: 'POST', body: JSON.stringify({ tema, customPrompt, videoId }) })
+}
+
 /** PATCH /videos/:id — Actualiza estado (ej: aprobar) */
 export async function actualizarVideo(videoId, cambios) {
     if (USE_MOCK) {
