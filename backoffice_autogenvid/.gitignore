@@ -23,6 +23,12 @@ coverage/
 .DS_Store
 Thumbs.db
 
+# Scripts y archivos de prueba con credenciales (NUNCA commitear)
+update-key.ps1
+test-newkey.js
+test-gemini.js
+lambda-env.json
+
 # IDE
 .vscode/
 .idea/
