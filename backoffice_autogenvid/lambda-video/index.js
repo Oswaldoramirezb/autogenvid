@@ -1,6 +1,6 @@
 'use strict';
 
-const { ok, clientError, serverError, preflight } = require('../shared/response');
+const { ok, clientError, serverError, preflight } = require('./shared/response');
 const { generarVideo } = require('./videoService');
 
 /**

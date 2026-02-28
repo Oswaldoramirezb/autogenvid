@@ -1,7 +1,7 @@
 'use strict';
 
 const { UpdateCommand } = require('@aws-sdk/lib-dynamodb');
-const { docClient } = require('../shared/dynamoClient');
+const { docClient } = require('./shared/dynamoClient');
 
 const USE_MOCK = process.env.USE_MOCK === 'true' || true;
 const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'videos';

@@ -1,8 +1,8 @@
 'use strict';
 
 const { UpdateCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
-const { docClient } = require('../shared/dynamoClient');
-const { getPresignedUrl } = require('../shared/s3Client');
+const { docClient } = require('./shared/dynamoClient');
+const { getPresignedUrl } = require('./shared/s3Client');
 
 const USE_MOCK = process.env.USE_MOCK === 'true' || true;
 const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'videos';

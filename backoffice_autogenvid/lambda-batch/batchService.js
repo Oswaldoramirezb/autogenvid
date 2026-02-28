@@ -2,7 +2,7 @@
 
 const { ScanCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
 const { LambdaClient, InvokeCommand } = require('@aws-sdk/client-lambda');
-const { docClient } = require('../shared/dynamoClient');
+const { docClient } = require('./shared/dynamoClient');
 
 const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'videos';
 const LAMBDA_VIDEO_FN = process.env.LAMBDA_VIDEO_FUNCTION_NAME || 'videobot-lambda-video';
