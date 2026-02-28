@@ -19,14 +19,14 @@ export default function TextCard({ video, onPreview, onAprobar, onGenerar, onEli
         <div className="card-accent p-5 flex flex-col gap-3 group animate-slide-up">
             {/* Header */}
             <div className="flex items-start justify-between gap-2">
-                <h3 className="font-semibold text-slate-100 text-sm leading-snug flex-1 line-clamp-2 group-hover:text-neon-blue transition-colors">
+                <h3 className="font-semibold text-slate-900 text-sm leading-snug flex-1 line-clamp-2 group-hover:text-neon-blue transition-colors">
                     {video.tema}
                 </h3>
                 <StatusBadge estado={video.estado} />
             </div>
 
             {/* Guion preview */}
-            <p className="text-slate-400 text-xs leading-relaxed line-clamp-2">
+            <p className="text-slate-500 text-xs leading-relaxed line-clamp-2">
                 {video.guion || 'Guion pendiente de generación...'}
             </p>
 

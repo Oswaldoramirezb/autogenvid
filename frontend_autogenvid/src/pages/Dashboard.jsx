@@ -84,14 +84,14 @@ export default function Dashboard() {
     const countPorEstado = st => videos.filter(v => v.estado === st).length
 
     return (
-        <div className="flex min-h-screen bg-dark-900">
+        <div className="flex min-h-screen bg-slate-50">
             <Sidebar videos={videos} />
 
             <main className="flex-1 flex flex-col overflow-hidden">
                 {/* Header */}
-                <header className="px-6 py-4 border-b border-dark-700 bg-dark-800/50 backdrop-blur-sm sticky top-0 z-10 flex items-center gap-4">
+                <header className="px-6 py-4 border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10 flex items-center gap-4 shadow-sm">
                     <div className="flex-1">
-                        <h1 className="text-lg font-bold text-slate-100">Dashboard de Videos</h1>
+                        <h1 className="text-lg font-bold text-slate-900">Dashboard de Videos</h1>
                         <p className="text-xs text-slate-500">{videos.length} videos · Mostrando {videosFiltrados.length}</p>
                     </div>
 
@@ -107,7 +107,7 @@ export default function Dashboard() {
 
                 {/* Formulario Nuevo Video (inline) */}
                 {showNuevoForm && (
-                    <div className="px-6 py-4 bg-dark-800/80 border-b border-neon-blue/20 animate-slide-up">
+                    <div className="px-6 py-4 bg-white border-b border-neon-blue/20 animate-slide-up shadow-sm">
                         <div className="max-w-2xl flex gap-3">
                             <input
                                 id="input-tema-nuevo"
@@ -138,7 +138,7 @@ export default function Dashboard() {
                 )}
 
                 {/* Filtros */}
-                <div className="px-6 py-3 border-b border-dark-700/50 flex items-center gap-3 flex-wrap bg-dark-900/30">
+                <div className="px-6 py-3 border-b border-slate-200 flex items-center gap-3 flex-wrap bg-white/70">
                     {/* Búsqueda */}
                     <input
                         id="input-buscar-videos"
@@ -157,8 +157,8 @@ export default function Dashboard() {
                                 id={`filtro-${e}`}
                                 onClick={() => setFiltro(e)}
                                 className={`text-xs px-3 py-1.5 rounded-full border transition-all duration-200 capitalize ${filtroEstado === e
-                                        ? 'bg-neon-blue/20 border-neon-blue/50 text-neon-blue'
-                                        : 'border-dark-600 text-slate-500 hover:text-slate-300 hover:border-dark-500'
+                                    ? 'bg-neon-blue/10 border-neon-blue/50 text-neon-blue'
+                                    : 'border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 bg-white'
                                     }`}
                             >
                                 {e === 'todos' ? `Todos (${videos.length})` : `${e} (${countPorEstado(e)})`}
@@ -174,7 +174,7 @@ export default function Dashboard() {
                     ) : videosFiltrados.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-24 text-center">
                             <div className="text-6xl mb-4">🎬</div>
-                            <h3 className="text-xl font-semibold text-slate-400 mb-2">No hay videos</h3>
+                            <h3 className="text-xl font-semibold text-slate-600 mb-2">No hay videos</h3>
                             <p className="text-slate-500 text-sm max-w-sm">
                                 {busqueda || filtroEstado !== 'todos'
                                     ? 'No se encontraron videos con esos filtros.'
@@ -211,9 +211,9 @@ export default function Dashboard() {
 
             {/* Player inline (para ver video terminado) */}
             {playerVideo && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-950/80 backdrop-blur-md animate-fade-in">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fade-in">
                     <div className="w-full max-w-xl card p-6 animate-slide-up">
-                        <h2 className="font-bold text-slate-100 mb-4 truncate">{playerVideo.tema}</h2>
+                        <h2 className="font-bold text-slate-900 mb-4 truncate">{playerVideo.tema}</h2>
                         <VideoPlayer videoUrl={playerVideo.videoUrl} onClose={() => setPlayerVideo(null)} />
                     </div>
                 </div>
@@ -223,8 +223,8 @@ export default function Dashboard() {
             {toast && (
                 <div className={`fixed bottom-6 right-6 z-[100] px-5 py-3 rounded-xl text-sm font-medium shadow-2xl border animate-slide-up
           ${toast.tipo === 'error'
-                        ? 'bg-red-900/90 border-red-500/30 text-red-200'
-                        : 'bg-neon-green/10 border-neon-green/30 text-green-300'}`}>
+                        ? 'bg-red-50 border-red-200 text-red-700'
+                        : 'bg-green-50 border-green-200 text-green-700'}`}>
                     {toast.msg}
                 </div>
             )}

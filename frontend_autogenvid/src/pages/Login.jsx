@@ -44,12 +44,12 @@ export default function Login() {
                     <div className="grid grid-cols-3 gap-3 mb-8">
                         {[
                             { icon: '🤖', label: 'IA Generativa' },
-                            { icon: '🎙️', label: 'Voz Clonada' },
-                            { icon: '🎬', label: '1K Videos' },
+                            { icon: '🎤', label: 'Voz Sintética' },
+                            { icon: '🎬', label: 'Video Auto' },
                         ].map(({ icon, label }) => (
-                            <div key={label} className="flex flex-col items-center gap-1 bg-dark-900/50 rounded-xl p-3 border border-dark-700">
+                            <div key={label} className="flex flex-col items-center gap-1 bg-slate-50 rounded-xl p-3 border border-slate-200">
                                 <span className="text-2xl">{icon}</span>
-                                <span className="text-xs text-slate-400 font-medium">{label}</span>
+                                <span className="text-xs text-slate-600 font-medium">{label}</span>
                             </div>
                         ))}
                     </div>

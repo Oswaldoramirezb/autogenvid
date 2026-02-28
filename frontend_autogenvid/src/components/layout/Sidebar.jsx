@@ -24,33 +24,33 @@ export default function Sidebar({ videos = [] }) {
     }, {})
 
     return (
-        <aside className="w-64 min-h-screen bg-dark-800 border-r border-dark-700 flex flex-col">
+        <aside className="w-64 min-h-screen bg-white border-r border-slate-200 flex flex-col shadow-sm">
             {/* Logo */}
-            <div className="px-5 py-5 border-b border-dark-700">
+            <div className="px-5 py-5 border-b border-slate-100">
                 <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-neon-blue to-neon-purple flex items-center justify-center text-xl shadow-neon-blue">
                         🎬
                     </div>
                     <div>
-                        <h1 className="font-bold text-slate-100 text-sm leading-tight">VideoBot AI</h1>
-                        <p className="text-[10px] text-slate-500">Generador de Videos</p>
+                        <h1 className="font-bold text-slate-900 text-sm leading-tight">VideoBot AI</h1>
+                        <p className="text-[10px] text-slate-400">Generador de Videos</p>
                     </div>
                 </div>
             </div>
 
             {/* Stats rápidas */}
-            <div className="px-4 py-4 border-b border-dark-700">
-                <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mb-3">Estado del Proyecto</p>
+            <div className="px-4 py-4 border-b border-slate-100">
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-3">Estado del Proyecto</p>
                 <div className="space-y-2">
                     {ESTADO_STATS.map(({ label, key, color }) => (
                         <div key={key} className="flex items-center justify-between">
-                            <span className="text-xs text-slate-400">{label}</span>
+                            <span className="text-xs text-slate-500">{label}</span>
                             <span className={`text-xs font-bold font-mono ${color}`}>{counts[key] || 0}</span>
                         </div>
                     ))}
-                    <div className="border-t border-dark-700 pt-2 flex items-center justify-between">
-                        <span className="text-xs text-slate-400">Total</span>
-                        <span className="text-xs font-bold font-mono text-slate-200">{videos.length}</span>
+                    <div className="border-t border-slate-100 pt-2 flex items-center justify-between">
+                        <span className="text-xs text-slate-500">Total</span>
+                        <span className="text-xs font-bold font-mono text-slate-700">{videos.length}</span>
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@ export default function Sidebar({ videos = [] }) {
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
               ${location.pathname === path
                                 ? 'bg-neon-blue/10 text-neon-blue border border-neon-blue/30'
-                                : 'text-slate-400 hover:text-slate-200 hover:bg-dark-700/50'
+                                : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                             }`}
                     >
                         <span>{icon}</span>
@@ -74,14 +74,14 @@ export default function Sidebar({ videos = [] }) {
             </nav>
 
             {/* User info */}
-            <div className="px-4 py-4 border-t border-dark-700">
+            <div className="px-4 py-4 border-t border-slate-100">
                 <div className="flex items-center gap-3 mb-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neon-blue to-neon-purple flex items-center justify-center text-sm font-bold">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neon-blue to-neon-purple flex items-center justify-center text-sm font-bold text-white">
                         {user?.name?.[0]?.toUpperCase() || '?'}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-slate-200 truncate">{user?.name || user?.username || 'Admin'}</p>
-                        <p className="text-[10px] text-slate-500 truncate">{user?.email || 'admin@videobotai.com'}</p>
+                        <p className="text-xs font-semibold text-slate-800 truncate">{user?.name || user?.username || 'Admin'}</p>
+                        <p className="text-[10px] text-slate-400 truncate">{user?.email || 'admin@videobotai.com'}</p>
                     </div>
                 </div>
                 <button

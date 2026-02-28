@@ -4,13 +4,13 @@ export default {
     theme: {
         extend: {
             colors: {
-                // Paleta dark neón VideoBot AI
+                // Paleta clara VideoBot AI
                 dark: {
-                    950: '#030712',
-                    900: '#0f172a',
-                    800: '#1e293b',
-                    700: '#334155',
-                    600: '#475569',
+                    950: '#edf2ff',   // fondo base tintado
+                    900: '#f0f4ff',   // fondo página
+                    800: '#ffffff',   // cards / superficies
+                    700: '#e2e8f0',   // bordes ligeros
+                    600: '#94a3b8',   // elementos muted
                 },
                 neon: {
                     blue: '#3b82f6',
@@ -68,8 +68,8 @@ export default {
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                'gradient-neon': 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)',
-                'gradient-card': 'linear-gradient(135deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.95) 100%)',
+                'gradient-neon': 'linear-gradient(135deg, #f0f4ff 0%, #e8eeff 50%, #f0f4ff 100%)',
+                'gradient-card': 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,244,255,0.9) 100%)',
             },
         },
     },

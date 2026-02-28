@@ -1,15 +1,15 @@
 export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, loading }) {
     return (
         <div className="space-y-5">
-            <h3 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                 🎙️ Configuración de Voz
             </h3>
 
             {/* Stability */}
             <div>
                 <div className="flex justify-between items-center mb-2">
-                    <label className="text-xs text-slate-400 font-medium">Stability (Estabilidad)</label>
-                    <span className="text-xs font-mono bg-dark-900 px-2 py-0.5 rounded text-neon-blue">
+                    <label className="text-xs text-slate-600 font-medium">Stability (Estabilidad)</label>
+                    <span className="text-xs font-mono bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-neon-blue">
                         {settings.stability.toFixed(2)}
                     </span>
                 </div>
@@ -19,14 +19,14 @@ export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, 
                     min="0.0" max="1.0" step="0.01"
                     value={settings.stability}
                     onChange={e => onChange({ ...settings, stability: parseFloat(e.target.value) })}
-                    className="w-full h-2 bg-dark-700 rounded-full appearance-none cursor-pointer
+                    className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer
                      [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4
                      [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full
                      [&::-webkit-slider-thumb]:bg-neon-blue [&::-webkit-slider-thumb]:shadow-neon-blue
                      [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-transform
                      [&::-webkit-slider-thumb]:hover:scale-125"
                 />
-                <div className="flex justify-between text-[10px] text-slate-600 mt-1">
+                <div className="flex justify-between text-[10px] text-slate-400 mt-1">
                     <span>0.0 (Más natural)</span>
                     <span>1.0 (Más estable)</span>
                 </div>
@@ -35,8 +35,8 @@ export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, 
             {/* Similarity */}
             <div>
                 <div className="flex justify-between items-center mb-2">
-                    <label className="text-xs text-slate-400 font-medium">Similarity (Similitud a tu voz)</label>
-                    <span className="text-xs font-mono bg-dark-900 px-2 py-0.5 rounded text-neon-purple">
+                    <label className="text-xs text-slate-600 font-medium">Similarity (Similitud a tu voz)</label>
+                    <span className="text-xs font-mono bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-neon-purple">
                         {settings.similarity.toFixed(2)}
                     </span>
                 </div>
@@ -46,14 +46,14 @@ export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, 
                     min="0.0" max="1.0" step="0.01"
                     value={settings.similarity}
                     onChange={e => onChange({ ...settings, similarity: parseFloat(e.target.value) })}
-                    className="w-full h-2 bg-dark-700 rounded-full appearance-none cursor-pointer
+                    className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer
                      [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4
                      [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full
                      [&::-webkit-slider-thumb]:bg-neon-purple [&::-webkit-slider-thumb]:shadow-neon-purple
                      [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-transform
                      [&::-webkit-slider-thumb]:hover:scale-125"
                 />
-                <div className="flex justify-between text-[10px] text-slate-600 mt-1">
+                <div className="flex justify-between text-[10px] text-slate-400 mt-1">
                     <span>0.0 (Menos parecido)</span>
                     <span>1.0 (Muy parecido)</span>
                 </div>

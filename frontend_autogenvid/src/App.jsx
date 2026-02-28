@@ -11,7 +11,7 @@ export default function App() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark-900 flex items-center justify-center">
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-16 h-16 border-4 border-neon-blue/30 border-t-neon-blue rounded-full animate-spin" />
                     <p className="text-slate-400 text-sm animate-pulse">Verificando sesión...</p>

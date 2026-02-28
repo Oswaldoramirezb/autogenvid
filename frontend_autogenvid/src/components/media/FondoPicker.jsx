@@ -39,18 +39,18 @@ export default function FondoPicker({ modo, onModoChange, fondosSeleccionados, o
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-slate-300">🎞️ Fondos del Video</h3>
+                <h3 className="text-sm font-semibold text-slate-700">🎞️ Fondos del Video</h3>
                 <span className="text-xs text-slate-500">{fondosSeleccionados.length} seleccionados</span>
             </div>
 
             {/* Toggle Video / Foto */}
-            <div className="flex gap-1 p-1 bg-dark-900/50 rounded-xl border border-dark-700">
+            <div className="flex gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200">
                 <button
                     id="btn-toggle-video"
                     onClick={() => handleModoChange('video')}
                     className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${modo === 'video'
-                            ? 'bg-neon-blue text-white shadow-neon-blue'
-                            : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-neon-blue text-white shadow-neon-blue'
+                        : 'text-slate-500 hover:text-slate-700'
                         }`}
                 >
                     📹 Video
@@ -59,8 +59,8 @@ export default function FondoPicker({ modo, onModoChange, fondosSeleccionados, o
                     id="btn-toggle-foto"
                     onClick={() => handleModoChange('foto')}
                     className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${modo === 'foto'
-                            ? 'bg-neon-purple text-white shadow-neon-purple'
-                            : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-neon-purple text-white shadow-neon-purple'
+                        : 'text-slate-500 hover:text-slate-700'
                         }`}
                 >
                     🖼️ Foto
@@ -97,8 +97,8 @@ export default function FondoPicker({ modo, onModoChange, fondosSeleccionados, o
                             id={`btn-fondo-${fondo.id}`}
                             onClick={() => toggleFondo(fondo)}
                             className={`relative rounded-xl overflow-hidden aspect-video group transition-all duration-200 ${seleccionado
-                                    ? 'ring-2 ring-neon-blue shadow-neon-blue scale-105'
-                                    : 'ring-1 ring-dark-600 hover:ring-neon-blue/50 hover:scale-105'
+                                ? 'ring-2 ring-neon-blue shadow-neon-blue scale-105'
+                                : 'ring-1 ring-slate-300 hover:ring-neon-blue/50 hover:scale-105'
                                 }`}
                         >
                             <img
@@ -108,8 +108,8 @@ export default function FondoPicker({ modo, onModoChange, fondosSeleccionados, o
                                 onError={e => { e.target.src = 'https://placehold.co/300x150/1e293b/3b82f6?text=Fondo' }}
                             />
                             {/* Overlay con keyword */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span className="absolute bottom-1 left-1 text-[10px] text-white font-medium px-1.5 py-0.5 bg-dark-900/70 rounded">
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span className="absolute bottom-1 left-1 text-[10px] text-white font-medium px-1.5 py-0.5 bg-black/60 rounded">
                                     {fondo.keyword}
                                 </span>
                             </div>

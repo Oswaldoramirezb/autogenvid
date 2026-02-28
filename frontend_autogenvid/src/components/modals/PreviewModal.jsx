@@ -113,33 +113,33 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-950/80 backdrop-blur-md animate-fade-in">
-            <div className="w-full max-w-2xl bg-dark-800 border border-dark-700 rounded-2xl shadow-3xl overflow-hidden animate-slide-up max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fade-in">
+            <div className="w-full max-w-2xl bg-white border border-slate-200 rounded-2xl shadow-3xl overflow-hidden animate-slide-up max-h-[90vh] flex flex-col">
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-dark-700 bg-gradient-to-r from-dark-800 to-dark-900 shrink-0">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-white shrink-0">
                     <div className="flex-1 min-w-0">
-                        <h2 className="font-bold text-slate-100 text-sm truncate">{video.tema}</h2>
-                        <p className="text-[10px] text-slate-500 mt-0.5">ID: {video.id.slice(0, 8)}...</p>
+                        <h2 className="font-bold text-slate-900 text-sm truncate">{video.tema}</h2>
+                        <p className="text-[10px] text-slate-400 mt-0.5">ID: {video.id.slice(0, 8)}...</p>
                     </div>
                     <button
                         id="btn-cerrar-modal"
                         onClick={onClose}
-                        className="text-slate-400 hover:text-slate-200 transition-colors ml-4 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-dark-700"
+                        className="text-slate-400 hover:text-slate-700 transition-colors ml-4 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100"
                     >
                         ✕
                     </button>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex border-b border-dark-700 shrink-0">
+                <div className="flex border-b border-slate-200 shrink-0">
                     {TABS.map(t => (
                         <button
                             key={t.id}
                             id={`tab-${t.id}`}
                             onClick={() => setTab(t.id)}
                             className={`flex-1 py-3 text-xs font-medium transition-all duration-200 ${tab === t.id
-                                    ? 'text-neon-blue border-b-2 border-neon-blue bg-neon-blue/5'
-                                    : 'text-slate-500 hover:text-slate-300 hover:bg-dark-700/30'
+                                ? 'text-neon-blue border-b-2 border-neon-blue bg-neon-blue/5'
+                                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
                                 }`}
                         >
                             {t.label}
@@ -154,7 +154,7 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
                         <div className="space-y-4 animate-fade-in">
                             {/* Guion editable */}
                             <div className="flex items-center justify-between">
-                                <h3 className="text-sm font-semibold text-slate-300">📝 Guion</h3>
+                                <h3 className="text-sm font-semibold text-slate-700">📝 Guion</h3>
                                 <div className="flex items-center gap-2">
                                     {editedGuion !== savedGuion && (
                                         <span className="text-[10px] text-amber-400">● Sin guardar</span>
@@ -169,7 +169,7 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
                                 value={editedGuion}
                                 onChange={e => { setEditedGuion(e.target.value); setSaveSuccess(false) }}
                                 rows={8}
-                                className="w-full bg-dark-900/50 border border-dark-700 rounded-xl p-4 text-sm text-slate-300 leading-relaxed resize-y focus:outline-none focus:border-neon-blue/50 transition-colors"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-800 leading-relaxed resize-y focus:outline-none focus:border-neon-blue/50 transition-colors"
                                 placeholder="Guion pendiente..."
                             />
 
@@ -185,17 +185,17 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
                             </button>
 
                             {/* Sección refinar con IA */}
-                            <div className="border border-dark-700 rounded-xl p-4 space-y-3 bg-dark-900/30">
-                                <h4 className="text-xs font-semibold text-slate-400 flex items-center gap-2">
+                            <div className="border border-slate-200 rounded-xl p-4 space-y-3 bg-slate-50">
+                                <h4 className="text-xs font-semibold text-slate-600 flex items-center gap-2">
                                     ✨ Pedir corrección a la IA
-                                    <span className="text-slate-600 font-normal">— dile qué cambiar y regenerará el guion</span>
+                                    <span className="text-slate-400 font-normal">— dile qué cambiar y regenerará el guion</span>
                                 </h4>
                                 <textarea
                                     value={refinePrompt}
                                     onChange={e => setRefinePrompt(e.target.value)}
                                     rows={3}
                                     placeholder='Ej: "Enfócate más en los animales del amazonas", "Añade datos sobre la tribu Yanomami", "Hazlo más dramático y con más cifras"...'
-                                    className="w-full bg-dark-950 border border-dark-600 rounded-lg p-3 text-xs text-slate-300 resize-none focus:outline-none focus:border-neon-purple/50 transition-colors placeholder:text-slate-600"
+                                    className="w-full bg-white border border-slate-200 rounded-lg p-3 text-xs text-slate-800 resize-none focus:outline-none focus:border-neon-purple/50 transition-colors placeholder:text-slate-400"
                                 />
                                 {refineError && (
                                     <p className="text-xs text-red-400">⚠️ {refineError}</p>
@@ -217,19 +217,19 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
                             {/* Posts redes */}
                             {video.postRedes && (
                                 <div className="space-y-2">
-                                    <h4 className="text-xs font-semibold text-slate-400">📢 Posts para Redes Sociales</h4>
+                                    <h4 className="text-xs font-semibold text-slate-600">📢 Posts para Redes Sociales</h4>
                                     {Object.entries(video.postRedes).map(([red, texto]) => (
-                                        <div key={red} className="bg-dark-900/30 rounded-lg p-3 border border-dark-700">
+                                        <div key={red} className="bg-slate-50 rounded-lg p-3 border border-slate-200">
                                             <p className="text-[10px] text-slate-500 font-semibold uppercase mb-1">
                                                 {red === 'twitter' ? '𝕏 Twitter' : red === 'instagram' ? '📸 Instagram' : red === 'tiktok' ? '🎵 TikTok' : '💼 LinkedIn'}
                                             </p>
-                                            <p className="text-xs text-slate-300">{texto}</p>
+                                            <p className="text-xs text-slate-700">{texto}</p>
                                         </div>
                                     ))}
                                 </div>
                             )}
                             <div>
-                                <h4 className="text-xs font-semibold text-slate-400 mb-2">🔗 Fuentes ({video.fuentes?.length || 0})</h4>
+                                <h4 className="text-xs font-semibold text-slate-600 mb-2">🔗 Fuentes ({video.fuentes?.length || 0})</h4>
                                 <div className="space-y-1 max-h-24 overflow-y-auto">
                                     {(video.fuentes || []).map((url, i) => (
                                         <a key={i} href={url} target="_blank" rel="noopener noreferrer"
@@ -287,7 +287,7 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
                             ) : (
                                 <div className="text-center py-12">
                                     <div className="text-5xl mb-4">🎬</div>
-                                    <p className="text-slate-400 text-sm mb-6">
+                                    <p className="text-slate-500 text-sm mb-6">
                                         {fondosSel.length === 0
                                             ? 'Selecciona fondos en la pestaña Fondos para generar el video'
                                             : `${fondosSel.length} fondo(s) seleccionado(s). ¡Listo para generar!`}
@@ -312,7 +312,7 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
                 </div>
 
                 {/* Footer con acciones */}
-                <div className="px-6 py-4 border-t border-dark-700 flex items-center gap-3 shrink-0 bg-dark-900/30">
+                <div className="px-6 py-4 border-t border-slate-200 flex items-center gap-3 shrink-0 bg-slate-50">
                     <button
                         id="btn-modal-aprobar"
                         onClick={handleAprobar}
