@@ -16,7 +16,7 @@ export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, 
                 <input
                     id="slider-stability"
                     type="range"
-                    min="0.3" max="0.7" step="0.01"
+                    min="0.0" max="1.0" step="0.01"
                     value={settings.stability}
                     onChange={e => onChange({ ...settings, stability: parseFloat(e.target.value) })}
                     className="w-full h-2 bg-dark-700 rounded-full appearance-none cursor-pointer
@@ -27,8 +27,8 @@ export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, 
                      [&::-webkit-slider-thumb]:hover:scale-125"
                 />
                 <div className="flex justify-between text-[10px] text-slate-600 mt-1">
-                    <span>0.3 (Más natural)</span>
-                    <span>0.7 (Más estable)</span>
+                    <span>0.0 (Más natural)</span>
+                    <span>1.0 (Más estable)</span>
                 </div>
             </div>
 
@@ -43,7 +43,7 @@ export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, 
                 <input
                     id="slider-similarity"
                     type="range"
-                    min="0.5" max="0.9" step="0.01"
+                    min="0.0" max="1.0" step="0.01"
                     value={settings.similarity}
                     onChange={e => onChange({ ...settings, similarity: parseFloat(e.target.value) })}
                     className="w-full h-2 bg-dark-700 rounded-full appearance-none cursor-pointer
@@ -54,8 +54,8 @@ export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, 
                      [&::-webkit-slider-thumb]:hover:scale-125"
                 />
                 <div className="flex justify-between text-[10px] text-slate-600 mt-1">
-                    <span>0.5 (Menos parecido)</span>
-                    <span>0.9 (Muy parecido)</span>
+                    <span>0.0 (Menos parecido)</span>
+                    <span>1.0 (Muy parecido)</span>
                 </div>
             </div>
 
