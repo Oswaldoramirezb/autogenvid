@@ -1,37 +1,32 @@
 'use strict';
 
 const { ok, clientError, serverError, preflight } = require('./shared/response');
-const { generarPreview, buscarFondos } = require('./previewService');
+const { generarPreview } = require('./previewService');
 
 /**
  * Lambda handler — POST /preview
  *
- * Body: { videoId: string, modo: 'video'|'foto', stability?: number, similarity?: number, busqueda?: string }
- * Response: { videoId, sampleAudioUrl, fondos[], vozSettings, estado }
+ * Body: { videoId: string, stability?: number, similarity?: number }
+ * Response: { videoId, sampleAudioUrl, vozSettings, estado: 'preview' }
  */
 exports.handler = async (event) => {
     if (event.httpMethod === 'OPTIONS') return preflight();
 
     try {
         const body = JSON.parse(event.body || '{}');
-        const { videoId, modo = 'video', stability = 0.5, similarity = 0.7, busqueda } = body;
+        const { videoId, stability = 0.5, similarity = 0.7 } = body;
 
         if (!videoId) {
-            return clientError('El campo "videoId" es requerido.');
+            return clientError('Se requiere "videoId".');
         }
 
-        console.log(`[lambda-preview] videoId=${videoId} modo=${modo} stability=${stability} similarity=${similarity}`);
+        console.log(`[lambda-preview] videoId=${videoId} stability=${stability} similarity=${similarity}`);
 
-        // Si viene búsqueda, retornar solo fondos filtrados
-        if (busqueda) {
-            const fondos = await buscarFondos(busqueda, modo);
-            return ok({ fondos });
-        }
-
-        const result = await generarPreview(videoId, modo, Number(stability), Number(similarity));
+        const result = await generarPreview(videoId, Number(stability), Number(similarity));
         return ok(result);
 
     } catch (err) {
         return serverError(err);
     }
 };
+
