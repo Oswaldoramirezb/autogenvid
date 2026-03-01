@@ -61,48 +61,43 @@ locals {
   }
 }
 
-# ── Archivos ZIP de placeholder (en producción usar data source real) ─────────
-# Los ZIPs reales se generan con: cd lambda-xxx && zip -r function.zip .
-# y se suben via Terraform o CI/CD.
+# ── ZIPs reales generados con: cd lambda-xxx && npm install --omit=dev && Compress-Archive -Path ./* -DestinationPath function.zip ────
 
 resource "aws_lambda_function" "guion" {
-  function_name = "${var.name_prefix}-lambda-guion"
-  role          = aws_iam_role.lambda_exec.arn
-  runtime       = "nodejs20.x"
-  handler       = "index.handler"
-  timeout       = 30
-  memory_size   = 256
-
-  # En producción usar filename = "../backoffice_autogenvid/lambda-guion/function.zip"
-  filename      = "${path.module}/placeholder.zip"
-  source_code_hash = filebase64sha256("${path.module}/placeholder.zip")
-
+  function_name    = "${var.name_prefix}-lambda-guion"
+  role             = aws_iam_role.lambda_exec.arn
+  runtime          = "nodejs20.x"
+  handler          = "index.handler"
+  timeout          = 30
+  memory_size      = 256
+  filename         = "${path.root}/../backoffice_autogenvid/lambda-guion/function.zip"
+  source_code_hash = filebase64sha256("${path.root}/../backoffice_autogenvid/lambda-guion/function.zip")
   environment { variables = local.lambda_env }
   tags = { Name = "${var.name_prefix}-lambda-guion" }
 }
 
 resource "aws_lambda_function" "preview" {
-  function_name = "${var.name_prefix}-lambda-preview"
-  role          = aws_iam_role.lambda_exec.arn
-  runtime       = "nodejs20.x"
-  handler       = "index.handler"
-  timeout       = 30
-  memory_size   = 512
-  filename      = "${path.module}/placeholder.zip"
-  source_code_hash = filebase64sha256("${path.module}/placeholder.zip")
+  function_name    = "${var.name_prefix}-lambda-preview"
+  role             = aws_iam_role.lambda_exec.arn
+  runtime          = "nodejs20.x"
+  handler          = "index.handler"
+  timeout          = 30
+  memory_size      = 512
+  filename         = "${path.root}/../backoffice_autogenvid/lambda-preview/function.zip"
+  source_code_hash = filebase64sha256("${path.root}/../backoffice_autogenvid/lambda-preview/function.zip")
   environment { variables = local.lambda_env }
   tags = { Name = "${var.name_prefix}-lambda-preview" }
 }
 
 resource "aws_lambda_function" "batch" {
-  function_name = "${var.name_prefix}-lambda-batch"
-  role          = aws_iam_role.lambda_exec.arn
-  runtime       = "nodejs20.x"
-  handler       = "index.handler"
-  timeout       = 60
-  memory_size   = 256
-  filename      = "${path.module}/placeholder.zip"
-  source_code_hash = filebase64sha256("${path.module}/placeholder.zip")
+  function_name    = "${var.name_prefix}-lambda-batch"
+  role             = aws_iam_role.lambda_exec.arn
+  runtime          = "nodejs20.x"
+  handler          = "index.handler"
+  timeout          = 60
+  memory_size      = 256
+  filename         = "${path.root}/../backoffice_autogenvid/lambda-batch/function.zip"
+  source_code_hash = filebase64sha256("${path.root}/../backoffice_autogenvid/lambda-batch/function.zip")
   environment { variables = local.lambda_env }
   tags = { Name = "${var.name_prefix}-lambda-batch" }
 }
