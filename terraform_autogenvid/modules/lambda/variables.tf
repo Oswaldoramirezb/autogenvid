@@ -16,20 +16,21 @@ variable "gemini_api_key" {
   type      = string
   sensitive = true
 }
-variable "pexels_api_key" {
+
+variable "elevenlabs_voice_id" {
   type      = string
   sensitive = true
+  default   = "qRUgOhnxGASxirG4fKjv"
 }
-variable "unsplash_access_key" {
-  type      = string
-  sensitive = true
+
+variable "elevenlabs_model_id" {
+  type    = string
+  default = "eleven_turbo_v2_5"
 }
 
 output "lambda_guion_arn"              { value = aws_lambda_function.guion.arn }
 output "lambda_guion_invoke_arn"       { value = aws_lambda_function.guion.invoke_arn }
 output "lambda_preview_arn"            { value = aws_lambda_function.preview.arn }
 output "lambda_preview_invoke_arn"     { value = aws_lambda_function.preview.invoke_arn }
-output "lambda_video_arn"              { value = aws_lambda_function.video.arn }
-output "lambda_video_invoke_arn"       { value = aws_lambda_function.video.invoke_arn }
 output "lambda_batch_arn"              { value = aws_lambda_function.batch.arn }
 output "lambda_batch_function_name"    { value = aws_lambda_function.batch.function_name }

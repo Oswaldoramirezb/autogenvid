@@ -56,9 +56,8 @@ locals {
     USE_MOCK                = tostring(var.use_mock)
     ELEVENLABS_API_KEY      = var.elevenlabs_api_key
     GEMINI_API_KEY          = var.gemini_api_key
-    PEXELS_API_KEY          = var.pexels_api_key
-    UNSPLASH_ACCESS_KEY     = var.unsplash_access_key
-    LAMBDA_VIDEO_FUNCTION_NAME = "${var.name_prefix}-lambda-video"
+    ELEVENLABS_VOICE_ID     = var.elevenlabs_voice_id
+    E11_MODEL_ID               = var.elevenlabs_model_id
   }
 }
 
@@ -93,19 +92,6 @@ resource "aws_lambda_function" "preview" {
   source_code_hash = filebase64sha256("${path.module}/placeholder.zip")
   environment { variables = local.lambda_env }
   tags = { Name = "${var.name_prefix}-lambda-preview" }
-}
-
-resource "aws_lambda_function" "video" {
-  function_name = "${var.name_prefix}-lambda-video"
-  role          = aws_iam_role.lambda_exec.arn
-  runtime       = "nodejs20.x"
-  handler       = "index.handler"
-  timeout       = 900  # 15 min para procesamiento de video
-  memory_size   = 3008 # máximo para ffmpeg
-  filename      = "${path.module}/placeholder.zip"
-  source_code_hash = filebase64sha256("${path.module}/placeholder.zip")
-  environment { variables = local.lambda_env }
-  tags = { Name = "${var.name_prefix}-lambda-video" }
 }
 
 resource "aws_lambda_function" "batch" {
