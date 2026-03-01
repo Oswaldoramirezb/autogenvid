@@ -70,8 +70,8 @@ module "lambda" {
   use_mock                = var.use_mock
   elevenlabs_api_key      = var.elevenlabs_api_key
   gemini_api_key          = var.gemini_api_key
-  pexels_api_key          = var.pexels_api_key
-  unsplash_access_key     = var.unsplash_access_key
+  elevenlabs_voice_id     = var.elevenlabs_voice_id
+  elevenlabs_model_id     = var.elevenlabs_model_id
 }
 
 module "api_gateway" {
@@ -82,8 +82,6 @@ module "api_gateway" {
   lambda_guion_invoke_arn    = module.lambda.lambda_guion_invoke_arn
   lambda_preview_arn         = module.lambda.lambda_preview_arn
   lambda_preview_invoke_arn  = module.lambda.lambda_preview_invoke_arn
-  lambda_video_arn           = module.lambda.lambda_video_arn
-  lambda_video_invoke_arn    = module.lambda.lambda_video_invoke_arn
 }
 
 module "cloudfront" {

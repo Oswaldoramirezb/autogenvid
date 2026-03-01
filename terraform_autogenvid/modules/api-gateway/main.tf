@@ -67,37 +67,6 @@ resource "aws_lambda_permission" "preview" {
   source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
 }
 
-# ── Recurso /video ────────────────────────────────────────────────────────────
-resource "aws_api_gateway_resource" "video" {
-  rest_api_id = aws_api_gateway_rest_api.main.id
-  parent_id   = aws_api_gateway_rest_api.main.root_resource_id
-  path_part   = "video"
-}
-
-resource "aws_api_gateway_method" "video_post" {
-  rest_api_id   = aws_api_gateway_rest_api.main.id
-  resource_id   = aws_api_gateway_resource.video.id
-  http_method   = "POST"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "video" {
-  rest_api_id             = aws_api_gateway_rest_api.main.id
-  resource_id             = aws_api_gateway_resource.video.id
-  http_method             = aws_api_gateway_method.video_post.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = var.lambda_video_invoke_arn
-}
-
-resource "aws_lambda_permission" "video" {
-  statement_id  = "AllowAPIGatewayInvokeVideo"
-  action        = "lambda:InvokeFunction"
-  function_name = var.lambda_video_arn
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
-}
-
 # ── Recurso /videos (Listar) ──────────────────────────────────────────────────
 resource "aws_api_gateway_resource" "videos" {
   rest_api_id = aws_api_gateway_rest_api.main.id
@@ -167,13 +136,6 @@ module "cors_preview" {
   api_resource_id = aws_api_gateway_resource.preview.id
 }
 
-module "cors_video" {
-  source          = "squidfunk/api-gateway-enable-cors/aws"
-  version         = "0.3.3"
-  api_id          = aws_api_gateway_rest_api.main.id
-  api_resource_id = aws_api_gateway_resource.video.id
-}
-
 module "cors_videos" {
   source          = "squidfunk/api-gateway-enable-cors/aws"
   version         = "0.3.3"
@@ -193,13 +155,11 @@ resource "aws_api_gateway_deployment" "main" {
   depends_on = [
     aws_api_gateway_integration.guion,
     aws_api_gateway_integration.preview,
-    aws_api_gateway_integration.video,
     aws_api_gateway_integration.videos_get,
     aws_api_gateway_integration.video_delete,
     module.cors,
     module.cors_guion,
     module.cors_preview,
-    module.cors_video,
     module.cors_videos,
     module.cors_video_id,
   ]
@@ -226,8 +186,5 @@ variable "lambda_guion_arn"             { type = string }
 variable "lambda_guion_invoke_arn"      { type = string }
 variable "lambda_preview_arn"           { type = string }
 variable "lambda_preview_invoke_arn"    { type = string }
-variable "lambda_video_arn"             { type = string }
-variable "lambda_video_invoke_arn"      { type = string }
-
 output "api_gateway_url" { value = "${aws_api_gateway_stage.prod.invoke_url}" }
 output "api_gateway_id"  { value = aws_api_gateway_rest_api.main.id }
