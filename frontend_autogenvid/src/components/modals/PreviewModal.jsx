@@ -1,26 +1,18 @@
 import { useState, useRef, useEffect } from 'react'
 import VoiceSliders from '../voice/VoiceSliders'
-import FondoPicker from '../media/FondoPicker'
-import VideoPlayer from '../media/VideoPlayer'
-import { generarPreview, actualizarVideo, generarVideo, regenerarGuion, guardarGuion } from '../../services/api'
+import { generarPreview, regenerarGuion, guardarGuion } from '../../services/api'
 
 const TABS = [
     { id: 'guion', label: '📝 Guion' },
-    { id: 'voz', label: '🎙️ Voz' },
-    { id: 'fondos', label: '🎞️ Fondos' },
-    { id: 'video', label: '🎬 Video' },
+    { id: 'voz', label: '🎤 Voz' },
 ]
 
 export default function PreviewModal({ video, onClose, onVideoUpdate }) {
     const [tab, setTab] = useState('guion')
     const [vozSettings, setVozSettings] = useState(video.vozSettings || { stability: 0.5, similarity: 0.7 })
-    const [modo, setModo] = useState('video')
-    const [fondosSel, setFondosSel] = useState([])
     const [previewData, setPreviewData] = useState(null)
     const [loadingPreview, setLoading] = useState(false)
     const [isPlaying, setIsPlaying] = useState(false)
-    const [loadingVideo, setLoadingVideo] = useState(false)
-    const [videoGenerado, setVideoGen] = useState(video.videoUrl || null)
     // Guion editable localmente (no se guarda hasta Aprobar)
     const [editedGuion, setEditedGuion] = useState(video.guion || '')
     const [refinePrompt, setRefinePrompt] = useState('')
@@ -39,8 +31,7 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
     async function handleProbarVoz() {
         setLoading(true)
         try {
-            // Pasa el guion editado localmente para que la voz use ESE texto
-            const data = await generarPreview(video.id, modo, vozSettings.stability, vozSettings.similarity, editedGuion)
+            const data = await generarPreview(video.id, vozSettings.stability, vozSettings.similarity)
             setPreviewData(data)
             onVideoUpdate && onVideoUpdate()
             playAudio(data.sampleAudioUrl)
@@ -94,23 +85,6 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
         }
     }
 
-    async function handleAprobar() {
-        await actualizarVideo(video.id, { estado: 'aprobado', vozSettings, fondos: fondosSel.map(f => f.thumbUrl) })
-        onVideoUpdate && onVideoUpdate()
-        onClose()
-    }
-
-    async function handleGenerarVideo() {
-        setLoadingVideo(true)
-        try {
-            const result = await generarVideo(video.id, fondosSel.map(f => f.fullUrl), vozSettings.stability)
-            setVideoGen(result.videoUrl)
-            onVideoUpdate && onVideoUpdate()
-            setTab('video')
-        } finally {
-            setLoadingVideo(false)
-        }
-    }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fade-in">
@@ -254,74 +228,35 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
                             />
                             {previewData?.sampleAudioUrl && !loadingPreview && (
                                 <div className="mt-4 p-3 bg-neon-green/5 border border-neon-green/20 rounded-xl">
-                                    <p className="text-xs text-neon-green mb-2">✓ Audio de muestra listo</p>
-                                    <button
-                                        onClick={() => playAudio(previewData.sampleAudioUrl)}
-                                        className="btn-secondary text-xs px-4 py-2 rounded-lg"
-                                    >
-                                        ▶️ Reproducir de nuevo
-                                    </button>
+                                    <p className="text-xs text-neon-green mb-2">✓ Audio listo</p>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => playAudio(previewData.sampleAudioUrl)}
+                                            className="btn-secondary text-xs px-4 py-2 rounded-lg"
+                                        >
+                                            ▶️ Reproducir
+                                        </button>
+                                        <a
+                                            href={previewData.sampleAudioUrl}
+                                            download={`${video.tema.replace(/\s+/g, '_')}.mp3`}
+                                            className="btn-primary text-xs px-4 py-2 rounded-lg flex items-center gap-1"
+                                        >
+                                            ⬇️ Descargar MP3
+                                        </a>
+                                    </div>
                                 </div>
                             )}
                             <audio ref={audioRef} className="hidden" />
                         </div>
                     )}
 
-                    {/* Pestaña Fondos */}
-                    {tab === 'fondos' && (
-                        <div className="animate-fade-in">
-                            <FondoPicker
-                                modo={modo}
-                                onModoChange={setModo}
-                                fondosSeleccionados={fondosSel}
-                                onSeleccion={setFondosSel}
-                            />
-                        </div>
-                    )}
-
-                    {/* Pestaña Video */}
-                    {tab === 'video' && (
-                        <div className="animate-fade-in">
-                            {videoGenerado ? (
-                                <VideoPlayer videoUrl={videoGenerado} onClose={onClose} />
-                            ) : (
-                                <div className="text-center py-12">
-                                    <div className="text-5xl mb-4">🎬</div>
-                                    <p className="text-slate-500 text-sm mb-6">
-                                        {fondosSel.length === 0
-                                            ? 'Selecciona fondos en la pestaña Fondos para generar el video'
-                                            : `${fondosSel.length} fondo(s) seleccionado(s). ¡Listo para generar!`}
-                                    </p>
-                                    <button
-                                        id="btn-generar-video-modal"
-                                        onClick={handleGenerarVideo}
-                                        disabled={loadingVideo || fondosSel.length === 0}
-                                        className="btn-primary px-8 py-4 rounded-xl flex items-center gap-3 mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {loadingVideo ? (
-                                            <>
-                                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                Generando video (simulando ffmpeg)...
-                                            </>
-                                        ) : '⚡ Generar Video Ahora'}
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                    {/* Pestaña Fondos y Video han sido eliminadas */}
                 </div>
 
                 {/* Footer con acciones */}
                 <div className="px-6 py-4 border-t border-slate-200 flex items-center gap-3 shrink-0 bg-slate-50">
-                    <button
-                        id="btn-modal-aprobar"
-                        onClick={handleAprobar}
-                        className="btn-success flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2"
-                    >
-                        ✅ Aprobar para Batch
-                    </button>
-                    <button onClick={onClose} className="btn-secondary px-5 py-2.5 rounded-xl">
-                        Cancelar
+                    <button onClick={onClose} className="btn-secondary flex-1 py-2.5 rounded-xl">
+                        Cerrar
                     </button>
                 </div>
             </div>
