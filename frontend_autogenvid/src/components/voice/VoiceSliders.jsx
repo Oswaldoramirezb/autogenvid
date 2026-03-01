@@ -1,4 +1,4 @@
-export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, loading }) {
+export default function VoiceSliders({ settings, onChange, onProbar, onGenerarTotal, isPlaying, loading, loadingTotal }) {
     return (
         <div className="space-y-5">
             <h3 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
@@ -16,7 +16,7 @@ export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, 
                 <input
                     id="slider-stability"
                     type="range"
-                    min="0.0" max="1.0" step="0.01"
+                    min="0.0" max="1.2" step="0.01"
                     value={settings.stability}
                     onChange={e => onChange({ ...settings, stability: parseFloat(e.target.value) })}
                     className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer
@@ -28,7 +28,7 @@ export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, 
                 />
                 <div className="flex justify-between text-[10px] text-slate-400 mt-1">
                     <span>0.0 (Más natural)</span>
-                    <span>1.0 (Más estable)</span>
+                    <span>1.2 (Más estable)</span>
                 </div>
             </div>
 
@@ -59,27 +59,44 @@ export default function VoiceSliders({ settings, onChange, onProbar, isPlaying, 
                 </div>
             </div>
 
-            {/* Botón probar */}
-            <button
-                id="btn-probar-voz"
-                onClick={onProbar}
-                disabled={loading}
-                className="w-full btn-secondary py-3 flex items-center justify-center gap-2 rounded-xl border-neon-blue/30"
-            >
-                {loading ? (
-                    <>
-                        <div className="w-4 h-4 border-2 border-neon-blue/30 border-t-neon-blue rounded-full animate-spin" />
-                        Generando muestra...
-                    </>
-                ) : isPlaying ? (
-                    <>
-                        <span className="w-2 h-2 bg-neon-green rounded-full animate-pulse" />
-                        ⏸️ Reproduciendo...
-                    </>
-                ) : (
-                    '🎧 Probar 10 segundos'
-                )}
-            </button>
+            <div className="grid grid-cols-2 gap-3">
+                {/* Botón probar */}
+                <button
+                    id="btn-probar-voz"
+                    onClick={onProbar}
+                    disabled={loading || loadingTotal}
+                    className="btn-secondary py-3 flex items-center justify-center gap-2 rounded-xl border-neon-blue/30"
+                >
+                    {loading ? (
+                        <>
+                            <div className="w-4 h-4 border-2 border-neon-blue/30 border-t-neon-blue rounded-full animate-spin" />
+                        </>
+                    ) : isPlaying ? (
+                        <>
+                            <span className="w-2 h-2 bg-neon-green rounded-full animate-pulse" />
+                        </>
+                    ) : (
+                        '🎧 Muestra 10s'
+                    )}
+                </button>
+
+                {/* Botón generar total */}
+                <button
+                    id="btn-generar-todo"
+                    onClick={onGenerarTotal}
+                    disabled={loading || loadingTotal}
+                    className="btn-primary py-3 flex items-center justify-center gap-2 rounded-xl"
+                >
+                    {loadingTotal ? (
+                        <>
+                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            Generando...
+                        </>
+                    ) : (
+                        '🔥 Generar Audio'
+                    )}
+                </button>
+            </div>
         </div>
     )
 }

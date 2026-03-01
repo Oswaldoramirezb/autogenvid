@@ -23,20 +23,36 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
     const [saveSuccess, setSaveSuccess] = useState(false)
     const audioRef = useRef(null)
 
+    const [loadingTotal, setLoadingTotal] = useState(false)
+    const [fullAudioData, setFullAudioData] = useState(null)
+
     // si ya tiene audio guardado
     useEffect(() => {
         if (video.sampleAudio) setPreviewData({ sampleAudioUrl: video.sampleAudio })
-    }, [])
+        if (video.fullAudio) setFullAudioData({ sampleAudioUrl: video.fullAudio })
+    }, [video])
 
     async function handleProbarVoz() {
         setLoading(true)
         try {
-            const data = await generarPreview(video.id, vozSettings.stability, vozSettings.similarity)
+            const data = await generarPreview(video.id, vozSettings.stability, vozSettings.similarity, true)
             setPreviewData(data)
             onVideoUpdate && onVideoUpdate()
             playAudio(data.sampleAudioUrl)
         } finally {
             setLoading(false)
+        }
+    }
+
+    async function handleGenerarAudioTotal() {
+        setLoadingTotal(true)
+        try {
+            const data = await generarPreview(video.id, vozSettings.stability, vozSettings.similarity, false)
+            setFullAudioData(data)
+            onVideoUpdate && onVideoUpdate()
+            // No auto-play here, just show download
+        } finally {
+            setLoadingTotal(false)
         }
     }
 
@@ -71,17 +87,23 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
         }
     }
 
-    function playAudio(url) {
+    function playAudio(url, isFull = false) {
         if (audioRef.current) {
             audioRef.current.src = url || previewData?.sampleAudioUrl
             audioRef.current.currentTime = 0
             audioRef.current.play()
             setIsPlaying(true)
-            // Solo 10 segundos
-            setTimeout(() => {
-                audioRef.current?.pause()
-                setIsPlaying(false)
-            }, 10000)
+
+            if (!isFull) {
+                // Solo 10 segundos para preview
+                setTimeout(() => {
+                    audioRef.current?.pause()
+                    setIsPlaying(false)
+                }, 10000)
+            } else {
+                // Para audio total, esperamos a que termine
+                audioRef.current.onended = () => setIsPlaying(false)
+            }
         }
     }
 
@@ -223,23 +245,39 @@ export default function PreviewModal({ video, onClose, onVideoUpdate }) {
                                 settings={vozSettings}
                                 onChange={setVozSettings}
                                 onProbar={handleProbarVoz}
+                                onGenerarTotal={handleGenerarAudioTotal}
                                 isPlaying={isPlaying}
                                 loading={loadingPreview}
+                                loadingTotal={loadingTotal}
                             />
-                            {previewData?.sampleAudioUrl && !loadingPreview && (
-                                <div className="mt-4 p-3 bg-neon-green/5 border border-neon-green/20 rounded-xl">
-                                    <p className="text-xs text-neon-green mb-2">✓ Audio listo</p>
+                            {previewData?.sampleAudioUrl && (
+                                <div className="mt-4 p-3 bg-neon-blue/5 border border-neon-blue/20 rounded-xl">
+                                    <p className="text-[10px] text-neon-blue mb-1">Muestra de 10s lista</p>
+                                    <button
+                                        onClick={() => playAudio(previewData.sampleAudioUrl)}
+                                        className="text-xs font-medium text-neon-blue hover:underline"
+                                    >
+                                        ▶️ Volver a escuchar
+                                    </button>
+                                </div>
+                            )}
+                            {fullAudioData?.sampleAudioUrl && (
+                                <div className="mt-4 p-4 bg-neon-green/5 border border-neon-green/20 rounded-xl">
+                                    <p className="text-xs font-semibold text-neon-green mb-3 flex items-center gap-2">
+                                        <span className="flex h-2 w-2 rounded-full bg-neon-green"></span>
+                                        Audio completo listo
+                                    </p>
                                     <div className="flex gap-2">
                                         <button
-                                            onClick={() => playAudio(previewData.sampleAudioUrl)}
-                                            className="btn-secondary text-xs px-4 py-2 rounded-lg"
+                                            onClick={() => playAudio(fullAudioData.sampleAudioUrl, true)}
+                                            className="btn-secondary text-xs px-4 py-2.5 rounded-lg flex-1"
                                         >
-                                            ▶️ Reproducir
+                                            ▶️ Reproducir todo
                                         </button>
                                         <a
-                                            href={previewData.sampleAudioUrl}
-                                            download={`${video.tema.replace(/\s+/g, '_')}.mp3`}
-                                            className="btn-primary text-xs px-4 py-2 rounded-lg flex items-center gap-1"
+                                            href={fullAudioData.sampleAudioUrl}
+                                            download={`${video.tema.replace(/\s+/g, '_')}_completo.mp3`}
+                                            className="btn-primary text-xs px-4 py-2.5 rounded-lg flex-1 flex items-center justify-center gap-2"
                                         >
                                             ⬇️ Descargar MP3
                                         </a>

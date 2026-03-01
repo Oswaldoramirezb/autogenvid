@@ -51,27 +51,42 @@ async function generarAudioElevenLabs(texto, stability, similarity) {
  *   4. Retornar URL prefirmada de descarga (7 dias)
  *   5. Actualizar DynamoDB: estado='preview', sampleAudio, vozSettings
  */
-async function generarPreview(videoId, stability = 0.5, similarity = 0.7) {
+async function generarPreview(videoId, stability = 0.5, similarity = 0.7, isSample = false) {
     // Fecha del dia para organizar archivos en S3 por fecha
     const fechaHoy = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+    // ElevenLabs stability max is 1.0, clamp it for the API call
+    const e11Stability = Math.min(stability, 1.0);
 
     // MODO MOCK
     if (USE_MOCK || !ELEVENLABS_API_KEY) {
         console.log('[lambda-preview] Modo mock - usando audio de muestra');
         await new Promise(r => setTimeout(r, 600));
 
+        const updateData = isSample
+            ? {
+                UpdateExpression: 'SET sampleAudio = :a, vozSettings = :v',
+                ExpressionAttributeValues: {
+                    ':a': MOCK_AUDIO_URL,
+                    ':v': { stability, similarity },
+                },
+            }
+            : {
+                UpdateExpression: 'SET estado = :e, fullAudio = :a, vozSettings = :v',
+                ExpressionAttributeValues: {
+                    ':e': 'preview', // O 'audio_generado'
+                    ':a': MOCK_AUDIO_URL,
+                    ':v': { stability, similarity },
+                },
+            };
+
         await docClient.send(new UpdateCommand({
             TableName: TABLE_NAME,
             Key: { id: videoId },
-            UpdateExpression: 'SET estado = :e, sampleAudio = :a, vozSettings = :v',
-            ExpressionAttributeValues: {
-                ':e': 'preview',
-                ':a': MOCK_AUDIO_URL,
-                ':v': { stability, similarity },
-            },
+            ...updateData
         }));
 
-        return { videoId, sampleAudioUrl: MOCK_AUDIO_URL, vozSettings: { stability, similarity }, estado: 'preview' };
+        return { videoId, sampleAudioUrl: MOCK_AUDIO_URL, vozSettings: { stability, similarity }, isSample };
     }
 
     // MODO REAL
@@ -86,31 +101,54 @@ async function generarPreview(videoId, stability = 0.5, similarity = 0.7) {
     const video = queryResult.Items && queryResult.Items[0];
     if (!video || !video.guion) throw new Error(`El video ${videoId} no tiene guion`);
 
-    // 2. Generar MP3 con ElevenLabs
-    const audioBuffer = await generarAudioElevenLabs(video.guion, stability, similarity);
+    // 2. Preparar texto (truncar si es sample)
+    let textoFinal = video.guion;
+    if (isSample) {
+        // Aprovechamos los primeros ~250 caracteres para la muestra
+        textoFinal = video.guion.slice(0, 300);
+        console.log('[lambda-preview] Generando MUESTRA (isSample=true)');
+    } else {
+        console.log('[lambda-preview] Generando AUDIO TOTAL');
+    }
 
-    // 3. Subir a S3 — ruta: previews/{YYYY-MM-DD}/{videoId}/audio.mp3
-    const audioKey = `previews/${fechaHoy}/${videoId}/audio.mp3`;
+    // 3. Generar MP3 con ElevenLabs
+    const audioBuffer = await generarAudioElevenLabs(textoFinal, e11Stability, similarity);
+
+    // 4. Subir a S3 — ruta dependiente de si es sample o no
+    const fileName = isSample ? 'sample.mp3' : 'audio.mp3';
+    const audioKey = `previews/${fechaHoy}/${videoId}/${fileName}`;
     await putObject(AUDIOS_BUCKET, audioKey, audioBuffer, 'audio/mpeg');
     console.log('[lambda-preview] Audio subido a S3:', audioKey);
 
-    // 4. URL prefirmada de descarga (valida 7 dias)
-    const sampleAudioUrl = await getPresignedUrl(AUDIOS_BUCKET, audioKey, 604800);
+    // 5. URL prefirmada de descarga (valida 7 dias)
+    const audioUrl = await getPresignedUrl(AUDIOS_BUCKET, audioKey, 604800);
 
-    // 5. Actualizar DynamoDB
-    await docClient.send(new UpdateCommand({
-        TableName: TABLE_NAME,
-        Key: { id: videoId },
-        UpdateExpression: 'SET estado = :e, sampleAudio = :a, audioKey = :k, vozSettings = :v',
-        ExpressionAttributeValues: {
-            ':e': 'preview',
-            ':a': sampleAudioUrl,
-            ':k': audioKey,
-            ':v': { stability, similarity },
-        },
-    }));
+    // 6. Actualizar DynamoDB
+    if (isSample) {
+        await docClient.send(new UpdateCommand({
+            TableName: TABLE_NAME,
+            Key: { id: videoId },
+            UpdateExpression: 'SET sampleAudio = :a, vozSettings = :v',
+            ExpressionAttributeValues: {
+                ':a': audioUrl,
+                ':v': { stability, similarity },
+            },
+        }));
+    } else {
+        await docClient.send(new UpdateCommand({
+            TableName: TABLE_NAME,
+            Key: { id: videoId },
+            UpdateExpression: 'SET estado = :e, fullAudio = :a, audioKey = :k, vozSettings = :v',
+            ExpressionAttributeValues: {
+                ':e': 'preview',
+                ':a': audioUrl,
+                ':k': audioKey,
+                ':v': { stability, similarity },
+            },
+        }));
+    }
 
-    return { videoId, sampleAudioUrl, audioKey, vozSettings: { stability, similarity }, estado: 'preview' };
+    return { videoId, sampleAudioUrl: audioUrl, audioKey, vozSettings: { stability, similarity }, isSample };
 }
 
 module.exports = { generarPreview };

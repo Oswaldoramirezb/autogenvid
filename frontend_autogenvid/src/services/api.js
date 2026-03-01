@@ -72,7 +72,7 @@ export async function generarGuion(tema, customPrompt) {
 }
 
 /** POST /preview — Genera audio del guion */
-export async function generarPreview(videoId, stability, similarity) {
+export async function generarPreview(videoId, stability, similarity, isSample = false) {
     if (USE_MOCK) {
         await delay(800)
         _videosStore = _videosStore.map(v =>
@@ -82,7 +82,10 @@ export async function generarPreview(videoId, stability, similarity) {
         )
         return { videoId, sampleAudioUrl: MOCK_AUDIO_URL, vozSettings: { stability, similarity }, estado: 'preview' }
     }
-    return apiFetch('/preview', { method: 'POST', body: JSON.stringify({ videoId, stability, similarity }) })
+    return apiFetch('/preview', {
+        method: 'POST',
+        body: JSON.stringify({ videoId, stability, similarity, isSample })
+    })
 }
 
 /** PATCH /guion — Guarda el guion editado en DynamoDB */

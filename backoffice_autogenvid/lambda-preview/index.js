@@ -14,15 +14,15 @@ exports.handler = async (event) => {
 
     try {
         const body = JSON.parse(event.body || '{}');
-        const { videoId, stability = 0.5, similarity = 0.7 } = body;
+        const { videoId, stability = 0.5, similarity = 0.7, isSample = false } = body;
 
         if (!videoId) {
             return clientError('Se requiere "videoId".');
         }
 
-        console.log(`[lambda-preview] videoId=${videoId} stability=${stability} similarity=${similarity}`);
+        console.log(`[lambda-preview] videoId=${videoId} stability=${stability} similarity=${similarity} isSample=${isSample}`);
 
-        const result = await generarPreview(videoId, Number(stability), Number(similarity));
+        const result = await generarPreview(videoId, Number(stability), Number(similarity), isSample);
         return ok(result);
 
     } catch (err) {
