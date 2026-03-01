@@ -27,7 +27,7 @@ terraform apply
 *Toma nota de los **Outputs** al finalizar el comando.*
 
 ### 2. Configurar el Backend (Mocks)
-Por defecto, las lambdas vienen configuradas en **Modo Mock**. Si quieres usar las APIs reales de Gemini, ElevenLabs o Pexels:
+Por defecto, las lambdas vienen configuradas en **Modo Mock**. Si quieres usar las APIs reales de Gemini y ElevenLabs:
 
 ```bash
 cd backoffice_autogenvid
