@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 const FEATURES = [
     { icon: '🤖', title: 'Guiones con IA', desc: 'Gemini genera hooks de apertura, datos curiosos y posts de redes sociales para cada tema de forma automática.' },
     { icon: '🎙️', title: 'Voz Sintética', desc: 'ElevenLabs produce audio profesional con control de stability y similarity ajustable en tiempo real.' },
-    { icon: '🎬', title: 'Fondos Dinámicos', desc: 'Selecciona videos de Pexels o imágenes de Unsplash como fondo. Toggle rápido y buscador integrado.' },
+    { icon: '�️', title: 'Audio Completo', desc: 'ElevenLabs genera el audio completo del guion. Descárgalo directamente desde S3 con enlace válido por 7 días.' },
     { icon: '⚡', title: 'Batch Programado', desc: 'EventBridge automatiza la producción en lote. Configura el ritmo de generación según tus necesidades.' },
     { icon: '📊', title: 'Dashboard Central', desc: 'Controla el ciclo de vida de cada video: borrador, preview, aprobado y listo para publicar.' },
     { icon: '☁️', title: 'Serverless AWS', desc: 'S3 + CloudFront + Lambda + DynamoDB. Infraestructura que escala automáticamente, costo proporcional al uso.' },
@@ -12,7 +12,7 @@ const FEATURES = [
 const STEPS = [
     { num: '01', title: 'Define el tema', desc: 'Ingresa el tema o nicho de contenido que quieres cubrir.' },
     { num: '02', title: 'La IA genera el guion', desc: 'Gemini crea un guion optimizado para video corto con el hook y el mensaje clave.' },
-    { num: '03', title: 'Preview y ajuste', desc: 'Escucha la voz, edita el guion, elige el fondo y aprueba.' },
+    { num: '03', title: 'Preview y ajuste', desc: 'Escucha el audio completo, edita el guion y aprueba.' },
     { num: '04', title: 'Video listo', desc: 'El sistema ensambla el video final de forma automática y lo deja disponible.' },
 ]
 
@@ -45,8 +45,8 @@ export default function Home() {
                         Automatiza la creación<br />de <span className="text-gradient">videos con IA</span>
                     </h1>
                     <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-10 animate-fade-in leading-relaxed" style={{ animationDelay: '0.2s' }}>
-                        Plataforma serverless para producir videos cortos de forma automática.
-                        Guiones generados por IA, voz sintética, fondos dinámicos y publicación programada.
+                        Plataforma serverless para producir contenido de voz con IA.
+                        Guiones generados por IA, voz sintética y publicación programada.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: '0.3s' }}>
                         <Link to="/login" className="btn-primary px-8 py-4 text-lg rounded-xl inline-flex items-center gap-2">
