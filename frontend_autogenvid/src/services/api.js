@@ -4,10 +4,7 @@
  */
 import {
     MOCK_VIDEOS,
-    MOCK_FONDOS_VIDEO,
-    MOCK_FONDOS_FOTO,
     MOCK_AUDIO_URL,
-    MOCK_VIDEO_URL,
 } from './mocks'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
@@ -74,32 +71,18 @@ export async function generarGuion(tema, customPrompt) {
     return apiFetch('/guion', { method: 'POST', body: JSON.stringify({ tema, customPrompt }) })
 }
 
-/** POST /preview — Genera preview de audio y fondos */
-export async function generarPreview(videoId, modo, stability, similarity) {
+/** POST /preview — Genera audio del guion */
+export async function generarPreview(videoId, stability, similarity) {
     if (USE_MOCK) {
         await delay(800)
-        const fondos = modo === 'video' ? MOCK_FONDOS_VIDEO : MOCK_FONDOS_FOTO
-        // Actualizar en store local
         _videosStore = _videosStore.map(v =>
             v.id === videoId
                 ? { ...v, estado: 'preview', sampleAudio: MOCK_AUDIO_URL, vozSettings: { stability, similarity } }
                 : v
         )
-        return { videoId, sampleAudioUrl: MOCK_AUDIO_URL, fondos, estado: 'preview' }
+        return { videoId, sampleAudioUrl: MOCK_AUDIO_URL, vozSettings: { stability, similarity }, estado: 'preview' }
     }
-    return apiFetch('/preview', { method: 'POST', body: JSON.stringify({ videoId, modo, stability, similarity }) })
-}
-
-/** POST /video — Genera video final */
-export async function generarVideo(videoId, fondos, stability) {
-    if (USE_MOCK) {
-        await delay(2000)
-        _videosStore = _videosStore.map(v =>
-            v.id === videoId ? { ...v, estado: 'listo', videoUrl: MOCK_VIDEO_URL } : v
-        )
-        return { videoId, videoUrl: MOCK_VIDEO_URL, estado: 'listo' }
-    }
-    return apiFetch('/video', { method: 'POST', body: JSON.stringify({ videoId, fondos, stability }) })
+    return apiFetch('/preview', { method: 'POST', body: JSON.stringify({ videoId, stability, similarity }) })
 }
 
 /** PATCH /guion — Guarda el guion editado en DynamoDB */
@@ -139,15 +122,4 @@ export async function eliminarVideo(videoId) {
         return { deleted: true }
     }
     return apiFetch(`/videos/${videoId}`, { method: 'DELETE' })
-}
-
-/** Buscar fondos por keyword */
-export async function buscarFondos(keyword, modo) {
-    if (USE_MOCK) {
-        await delay(300)
-        const fondos = modo === 'video' ? MOCK_FONDOS_VIDEO : MOCK_FONDOS_FOTO
-        const kw = keyword.toLowerCase()
-        return fondos.filter(f => f.keyword.includes(kw) || kw.includes(f.keyword))
-    }
-    return apiFetch('/preview', { method: 'POST', body: JSON.stringify({ busqueda: keyword, modo }) })
 }
