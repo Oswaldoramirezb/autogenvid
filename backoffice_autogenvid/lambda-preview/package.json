@@ -1,10 +1,9 @@
 {
     "name": "lambda-preview",
     "version": "1.0.0",
-    "description": "Lambda VideoBot AI — Preview de audio ElevenLabs y fondos Pexels/Unsplash (mock)",
+    "description": "Lambda VideoBot AI — Generación de audio con ElevenLabs y subida a S3",
     "main": "index.js",
     "scripts": {
-        "test": "jest --coverage",
         "lint": "eslint ."
     },
     "dependencies": {
@@ -14,9 +13,7 @@
         "@aws-sdk/s3-request-presigner": "^3.540.0",
         "axios": "^1.13.6"
     },
-    "devDependencies": {
-        "jest": "^29.7.0"
-    },
+    "devDependencies": {},
     "engines": {
         "node": ">=20.x"
     }
