@@ -41,22 +41,22 @@ variable "gemini_api_key" {
   sensitive   = true
 }
 
-variable "pexels_api_key" {
-  description = "API key de Pexels para fondos de video"
-  type        = string
-  default     = "CAMBIA_ESTE_VALOR"
-  sensitive   = true
-}
-
-variable "unsplash_access_key" {
-  description = "Access key de Unsplash para fondos fotográficos"
-  type        = string
-  default     = "CAMBIA_ESTE_VALOR"
-  sensitive   = true
-}
 
 variable "use_mock" {
   description = "Si true, las lambdas usan datos mock en lugar de APIs reales"
   type        = bool
   default     = true
+}
+
+variable "elevenlabs_voice_id" {
+  description = "Voice ID de ElevenLabs (David Energetic u otra voz)"
+  type        = string
+  default     = "qRUgOhnxGASxirG4fKjv"
+  sensitive   = true
+}
+
+variable "elevenlabs_model_id" {
+  description = "Modelo de ElevenLabs (eleven_turbo_v2_5, eleven_flash_v2_5, etc)"
+  type        = string
+  default     = "eleven_turbo_v2_5"
 }
