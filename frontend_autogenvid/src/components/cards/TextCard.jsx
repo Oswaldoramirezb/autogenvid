@@ -2,14 +2,14 @@ import StatusBadge from '../ui/StatusBadge'
 
 const ESTADO_ACCIONES = {
     pendiente: ['preview', 'delete'],
-    preview: ['aprobar', 'preview', 'edit', 'delete'],
-    aprobado: ['generar', 'edit', 'delete'],
+    preview: ['edit', 'delete'],
+    aprobado: ['edit', 'delete'],
     generando: [],
-    listo: ['player', 'delete'],
+    listo: ['delete'],
     error: ['preview', 'delete'],
 }
 
-export default function TextCard({ video, onPreview, onAprobar, onGenerar, onEliminar, onPlayer, onEdit }) {
+export default function TextCard({ video, onPreview, onEliminar, onEdit }) {
     const acciones = ESTADO_ACCIONES[video.estado] || []
     const fechaFormateada = video.fechaObjetivo
         ? new Date(video.fechaObjetivo + 'T00:00:00').toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -58,36 +58,6 @@ export default function TextCard({ video, onPreview, onAprobar, onGenerar, onEli
                         title="Editar guion"
                     >
                         ✏️ Editar
-                    </button>
-                )}
-                {acciones.includes('aprobar') && (
-                    <button
-                        id={`btn-aprobar-${video.id}`}
-                        onClick={() => onAprobar(video)}
-                        className="btn-success text-xs px-3 py-1.5 rounded-md flex items-center gap-1"
-                        title="Aprobar para batch diario"
-                    >
-                        ✅ Aprobar
-                    </button>
-                )}
-                {acciones.includes('generar') && (
-                    <button
-                        id={`btn-generar-${video.id}`}
-                        onClick={() => onGenerar(video)}
-                        className="btn-primary text-xs px-3 py-1.5 rounded-md flex items-center gap-1"
-                        title="Generar video ahora (urgente)"
-                    >
-                        ⚡ Generar
-                    </button>
-                )}
-                {acciones.includes('player') && video.videoUrl && (
-                    <button
-                        id={`btn-player-${video.id}`}
-                        onClick={() => onPlayer(video)}
-                        className="btn-success text-xs px-3 py-1.5 rounded-md flex items-center gap-1"
-                        title="Ver video generado"
-                    >
-                        ▶️ Ver Video
                     </button>
                 )}
                 {acciones.includes('delete') && (
