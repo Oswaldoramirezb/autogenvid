@@ -2,10 +2,9 @@ import { useState, useEffect, useCallback } from 'react'
 import Sidebar from '../components/layout/Sidebar'
 import TextCard from '../components/cards/TextCard'
 import PreviewModal from '../components/modals/PreviewModal'
-import VideoPlayer from '../components/media/VideoPlayer'
 import LoadingSkeleton from '../components/ui/LoadingSkeleton'
 import StatusBadge from '../components/ui/StatusBadge'
-import { listarVideos, generarGuion, actualizarVideo, eliminarVideo, generarVideo } from '../services/api'
+import { listarVideos, generarGuion, eliminarVideo } from '../services/api'
 
 const FILTROS_ESTADO = ['todos', 'pendiente', 'preview', 'aprobado', 'generando', 'listo', 'error']
 
@@ -15,7 +14,6 @@ export default function Dashboard() {
     const [filtroEstado, setFiltro] = useState('todos')
     const [busqueda, setBusqueda] = useState('')
     const [modalVideo, setModalVideo] = useState(null)
-    const [playerVideo, setPlayerVideo] = useState(null)
     const [creando, setCreando] = useState(false)
     const [temaInput, setTemaInput] = useState('')
     const [showNuevoForm, setShowNuevo] = useState(false)
@@ -55,23 +53,11 @@ export default function Dashboard() {
         }
     }
 
-    async function handleAprobar(video) {
-        await actualizarVideo(video.id, { estado: 'aprobado' })
-        await cargarVideos()
-        showToast('✅ Video aprobado para batch diario')
-    }
-
     async function handleEliminar(id) {
         if (!window.confirm('¿Eliminar este video?')) return
         await eliminarVideo(id)
         await cargarVideos()
         showToast('🗑️ Video eliminado')
-    }
-
-    async function handleGenerarVideo(video) {
-        await generarVideo(video.id, video.fondos || [], video.vozSettings?.stability || 0.5)
-        await cargarVideos()
-        showToast('🎬 Video en cola de generación')
     }
 
     // Filtrado y búsqueda
@@ -188,10 +174,7 @@ export default function Dashboard() {
                                     key={video.id}
                                     video={video}
                                     onPreview={setModalVideo}
-                                    onAprobar={handleAprobar}
-                                    onGenerar={handleGenerarVideo}
                                     onEliminar={handleEliminar}
-                                    onPlayer={setPlayerVideo}
                                     onEdit={setModalVideo}
                                 />
                             ))}
@@ -207,16 +190,6 @@ export default function Dashboard() {
                     onClose={() => { setModalVideo(null); cargarVideos() }}
                     onVideoUpdate={cargarVideos}
                 />
-            )}
-
-            {/* Player inline (para ver video terminado) */}
-            {playerVideo && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fade-in">
-                    <div className="w-full max-w-xl card p-6 animate-slide-up">
-                        <h2 className="font-bold text-slate-900 mb-4 truncate">{playerVideo.tema}</h2>
-                        <VideoPlayer videoUrl={playerVideo.videoUrl} onClose={() => setPlayerVideo(null)} />
-                    </div>
-                </div>
             )}
 
             {/* Toast */}
