@@ -1,19 +1,14 @@
 {
     "name": "lambda-batch",
     "version": "1.0.0",
-    "description": "Lambda VideoBot AI — Batch diario EventBridge 8AM: genera 5 videos aprobados",
+    "description": "Lambda VideoBot AI — Batch diario EventBridge: reporta registros aprobados",
     "main": "index.js",
-    "scripts": {
-        "test": "jest --coverage"
-    },
+    "scripts": {},
     "dependencies": {
         "@aws-sdk/client-dynamodb": "^3.540.0",
-        "@aws-sdk/lib-dynamodb": "^3.540.0",
-        "@aws-sdk/client-lambda": "^3.540.0"
+        "@aws-sdk/lib-dynamodb": "^3.540.0"
     },
-    "devDependencies": {
-        "jest": "^29.7.0"
-    },
+    "devDependencies": {},
     "engines": {
         "node": ">=20.x"
     }
