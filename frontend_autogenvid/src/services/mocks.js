@@ -48,10 +48,6 @@ export const MOCK_VIDEOS = TEMAS.map((tema, i) => ({
     estado: estadoAleatorio(i),
     fechaObjetivo: new Date(Date.now() + (i < 10 ? 0 : 86400000 * Math.ceil(i / 5))).toISOString().split('T')[0],
     vozSettings: { stability: 0.5, similarity: 0.7 },
-    fondos: [
-        'https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?w=300',
-        'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?w=300',
-    ],
     sampleAudio: i < 15 ? 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' : null,
     videoUrl: i < 5 ? 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' : null,
     postRedes: {
@@ -63,24 +59,4 @@ export const MOCK_VIDEOS = TEMAS.map((tema, i) => ({
     createdAt: Math.floor(Date.now() / 1000) - i * 3600,
 }))
 
-// ─── Fondos mock ─────────────────────────────────────────────────────────────
-export const MOCK_FONDOS_VIDEO = [
-    { id: 'v1', thumbUrl: 'https://images.pexels.com/videos/856015/free-video-856015.jpg?h=150', fullUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', keyword: 'tecnología', tipo: 'video' },
-    { id: 'v2', thumbUrl: 'https://images.pexels.com/videos/3194277/free-video-3194277.jpg?h=150', fullUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', keyword: 'ciudad nocturna', tipo: 'video' },
-    { id: 'v3', thumbUrl: 'https://images.pexels.com/videos/3722055/free-video-3722055.jpg?h=150', fullUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', keyword: 'naturaleza', tipo: 'video' },
-    { id: 'v4', thumbUrl: 'https://images.pexels.com/videos/2800567/free-video-2800567.jpg?h=150', fullUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Subaru.mp4', keyword: 'espacio', tipo: 'video' },
-    { id: 'v5', thumbUrl: 'https://images.pexels.com/videos/1568454/free-video-1568454.jpg?h=150', fullUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4', keyword: 'datos', tipo: 'video' },
-    { id: 'v6', thumbUrl: 'https://images.pexels.com/videos/3129957/free-video-3129957.jpg?h=150', fullUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', keyword: 'futurismo', tipo: 'video' },
-]
-
-export const MOCK_FONDOS_FOTO = [
-    { id: 'f1', thumbUrl: 'https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?w=300&h=150&fit=crop', fullUrl: 'https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg', keyword: 'tecnología', tipo: 'foto' },
-    { id: 'f2', thumbUrl: 'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?w=300&h=150&fit=crop', fullUrl: 'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg', keyword: 'programación', tipo: 'foto' },
-    { id: 'f3', thumbUrl: 'https://images.pexels.com/photos/2582937/pexels-photo-2582937.jpeg?w=300&h=150&fit=crop', fullUrl: 'https://images.pexels.com/photos/2582937/pexels-photo-2582937.jpeg', keyword: 'ciudad', tipo: 'foto' },
-    { id: 'f4', thumbUrl: 'https://images.pexels.com/photos/355948/pexels-photo-355948.jpeg?w=300&h=150&fit=crop', fullUrl: 'https://images.pexels.com/photos/355948/pexels-photo-355948.jpeg', keyword: 'abstracto', tipo: 'foto' },
-    { id: 'f5', thumbUrl: 'https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?w=300&h=150&fit=crop', fullUrl: 'https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg', keyword: 'espacio', tipo: 'foto' },
-    { id: 'f6', thumbUrl: 'https://images.pexels.com/photos/590020/pexels-photo-590020.jpeg?w=300&h=150&fit=crop', fullUrl: 'https://images.pexels.com/photos/590020/pexels-photo-590020.jpeg', keyword: 'datos', tipo: 'foto' },
-]
-
 export const MOCK_AUDIO_URL = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
-export const MOCK_VIDEO_URL = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
